@@ -21,17 +21,27 @@ include('/jagg/constants.jag');
 include("/jagg/jagg.jag");
 
 jagg.block("options", {
-    initialize:function (data) {
+    initialize: function (data) {
 
     },
-    getInputs:function () {
+    getInputs: function () {
 
     },
     getOutputs: function (inputs) {
+        var appTypeName = request.getParameter("appTypeName");
         var manager = jagg.module("manager");
-        var cloudSpecificApplicationRepresentation = manager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
+        var modManager = jagg.module("manager");
+        var throttlingModule = jagg.module("throttling");
+        var applicationModule = jagg.module("application");
+        var runtimes = applicationModule.getAllRuntimes(appTypeName);
+        var allowedContainerSpecs = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
+        var isThrottled = throttlingModule.getThrottledStatus(allowedContainerSpecs);
+        var cloudSpecificApplicationRepresentation = modManager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
+
         return {
-            "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation
+            "cloudSpecificApplicationRepresentation": cloudSpecificApplicationRepresentation,
+            "isThrottled": isThrottled,
+            "cloudSpecificApplicationRepresentation": cloudSpecificApplicationRepresentation
         };
     }
 });
