@@ -21,10 +21,10 @@ include('/jagg/constants.jag');
 include("/jagg/jagg.jag");
 
 jagg.block("options", {
-    initialize: function (data) {
+    initialize:function (data) {
 
     },
-    getInputs: function () {
+    getInputs:function () {
 
     },
     getOutputs: function (inputs) {
