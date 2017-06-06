@@ -78,7 +78,7 @@ var isApplicationStartPossible = function(versionHashId) {
     var versionInfo = applicationModule.getVersionByHashId(versionHashId);
     var tenantId = manager.getTenantId(true);
     var tenantTotalResourceUsage = getTenantTotalResourceUsage(tenantId);
-    var aggregateCpu = tenantTotalResourceUsage["totalCpu"] + parseInt(versionInfo.conSpecMemory);
+    var aggregateCpu = tenantTotalResourceUsage["totalCpu"] + parseInt(versionInfo.conSpecCpu);
     var aggregateMemory = tenantTotalResourceUsage["totalRam"] + parseInt(versionInfo.conSpecMemory);
     if (aggregateCpu > subscription.maxCpu || aggregateMemory > subscription.maxMemory) {
         return false;
