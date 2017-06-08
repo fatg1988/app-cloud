@@ -1,7 +1,7 @@
-Welcome to WSO2 App Cloud
+Welcome to WSO2 Integration Cloud
 =========================
 
-App Cloud enables you to host applications written in multiple languages on multiple runtimes such as WSO2 Application Server, MSF4J, WSO2 Integration Server etc.
+Integration Cloud enables you to host applications written in multiple languages on multiple runtimes such as WSO2 Application Server, MSF4J, WSO2 Integration Server etc.
 
 ##High level features
 
