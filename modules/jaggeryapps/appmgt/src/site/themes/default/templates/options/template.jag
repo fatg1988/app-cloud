@@ -18,17 +18,26 @@
  */
 
 include("/jagg/jagg.jag");
+include("/jagg/constants.jag");
+
 
 jagg.template("options", function(inputs, outputs, jagg) {
     var appTypeName = request.getParameter("appTypeName");
     var newVersion = request.getParameter("newVersion");
     var queryString = request.getQueryString();
-%>
+    var cloudSpecificApplicationRepresentation = outputs.cloudSpecificApplicationRepresentation;
+    var isThrottled = outputs.isThrottled;
+    var requestMoreAppseURL = outputs.requestMoreAppseURL;
+    var cloudMgtURL = outputs.cloudMgtURL;
+    var cloudType = jagg.getSelectedCloud();
+    var requestUpgradePlan = cloudMgtURL + UPGRADE_BILLING_PLAN_URL + cloudType;
+    %>
 
 <script type="text/javascript">
     var appTypeName = "<%=appTypeName%>";
     var newVersion = "<%=newVersion%>";
     var queryString = '<%=queryString%>';
+    var requestUpgradePlan = "<%=requestUpgradePlan%>";
 </script>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -37,7 +46,6 @@ jagg.template("options", function(inputs, outputs, jagg) {
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/custom/custom.js'))%>"></script>
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('templates/options/js/options.js'))%>"></script>
 <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/custom/loader.js'))%>"></script>
-
 
 <% if (newVersion == "true") { %>
    <div class="action-bar">
@@ -58,7 +66,23 @@ jagg.template("options", function(inputs, outputs, jagg) {
         </a>
     </div>
 <% } %>
-
+<%
+    if (isThrottled) {
+        %>
+        <div class="container-fluid"><div class="row row-centered">
+          <div class="col-centered col-xs-10 col-sm-7  col-md-9 col-lg-9">
+            <div class="cloud-new-content padding-top-lg">
+              <h2>You do not have enough resources to create new applications/versions.</h2>
+                <div class=" font-size-18">
+                  Stop an existing application/version to continue. If not <a href='<%=requestUpgradePlan%>'
+                  target="_blank">Upgrade</a> your account to a higher subscription plan.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%
+    } else { %>
     <div class="container-fluid app-type-options padding-bottom-xlg padding-top-xlg">
         <h2 class="margin-bottom-25 margin-left-40">
             Let's get started...
@@ -121,6 +145,7 @@ jagg.template("options", function(inputs, outputs, jagg) {
           </a>
         </div>
     </div>
+    <% } %>
 <%
 });
 %>
