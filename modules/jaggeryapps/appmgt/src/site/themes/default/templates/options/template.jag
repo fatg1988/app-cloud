@@ -30,7 +30,7 @@ jagg.template("options", function(inputs, outputs, jagg) {
     var requestMoreAppseURL = outputs.requestMoreAppseURL;
     var cloudMgtURL = outputs.cloudMgtURL;
     var cloudType = jagg.getSelectedCloud();
-    var requestUpgradePlan = cloudMgtURL + "/site/pages/payment-plans.jag?cloud-type=" + cloudType;
+    var requestUpgradePlan = cloudMgtURL + UPGRADE_BILLING_PLAN_URL + cloudType;
     %>
 
 <script type="text/javascript">

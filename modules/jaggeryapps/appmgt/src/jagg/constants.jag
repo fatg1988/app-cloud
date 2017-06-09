@@ -112,7 +112,7 @@ var CHANGE_PASSWORD_URL = "ChangePassword.Url";
 var PROFILE_URL = "/site/pages/user-profile.jag";
 var CHANGE_PASSWORD_URL = "/site/pages/change-password.jag";
 var CUSTOM_URL_SETTINGS_PAGE_URL = "/site/pages/custom_url.jag";
-var UPGRADE_BILLING_PLAN_URL= "/site/pages/payment-plans.jag";
+var UPGRADE_BILLING_PLAN_URL= "/site/pages/payment-plans.jag?cloud-type=";
 var CONTACT_US_URL= "/site/pages/contact-us.jag";
 var ACCOUNT_SUMMARY_URL = "/site/pages/account-summary.jag";
 
