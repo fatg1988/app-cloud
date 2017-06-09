@@ -73,6 +73,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     }
     runtimeProperties = encodeURIComponent(stringify(runtimeProperties), "UTF-8");
     var isBallerinaComposerAvailable = versions[BALLERINA_COMPOSER];
+    var isThrottled = outputs.isThrottled;
 
 %>
 
@@ -114,6 +115,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var isBallerinaComposerAvailable = <%=isBallerinaComposerAvailable%>
     var BALLERINA_COMPOSER = "<%=BALLERINA_COMPOSER%>";
     var BALLERINA = "<%=BALLERINA%>";
+    var isThrottled = <%=isThrottled%>;
 
 </script>
 
@@ -520,7 +522,9 @@ jagg.template("home", function(inputs, outputs, jagg) {
 
     // redeploy application
     function startApplication() {
-        executeAsync(drawProgressWindow("Starting the " + cloudSpecificApplicationRepresentation.toLowerCase() + "..."));
+         if(!isThrottled){
+            executeAsync(drawProgressWindow("Starting the " + cloudSpecificApplicationRepresentation.toLowerCase() + "..."));
+         }
         jagg.post("../blocks/application/application.jag", {
             action: "startApplication",
             applicationName: applicationName,
