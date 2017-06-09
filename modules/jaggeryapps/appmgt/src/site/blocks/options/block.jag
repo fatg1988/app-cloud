@@ -33,6 +33,7 @@ jagg.block("options", {
         var throttlingModule = jagg.module("throttling");
         var applicationModule = jagg.module("application");
         var runtimes = applicationModule.getAllRuntimes(appTypeName);
+        // For a particular appType there is at least one runtime. Here the first runtime is taken
         var allowedContainerSpecs = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
         var isThrottled = throttlingModule.getThrottledStatus(allowedContainerSpecs);
         var cloudSpecificApplicationRepresentation = manager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
