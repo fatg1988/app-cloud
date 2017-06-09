@@ -30,13 +30,12 @@ jagg.block("options", {
     getOutputs: function (inputs) {
         var appTypeName = request.getParameter("appTypeName");
         var manager = jagg.module("manager");
-        var modManager = jagg.module("manager");
         var throttlingModule = jagg.module("throttling");
         var applicationModule = jagg.module("application");
         var runtimes = applicationModule.getAllRuntimes(appTypeName);
         var allowedContainerSpecs = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
         var isThrottled = throttlingModule.getThrottledStatus(allowedContainerSpecs);
-        var cloudSpecificApplicationRepresentation = modManager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
+        var cloudSpecificApplicationRepresentation = manager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
         var cloudMgtURL = manager.getPropertyValue(CLOUD_MGT_URL);
 
         return {

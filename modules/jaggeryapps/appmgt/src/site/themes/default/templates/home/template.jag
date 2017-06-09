@@ -522,9 +522,9 @@ jagg.template("home", function(inputs, outputs, jagg) {
 
     // redeploy application
     function startApplication() {
-         if(!isThrottled){
+        if (!isThrottled) {
             executeAsync(drawProgressWindow("Starting the " + cloudSpecificApplicationRepresentation.toLowerCase() + "..."));
-         }
+        }
         jagg.post("../blocks/application/application.jag", {
             action: "startApplication",
             applicationName: applicationName,
