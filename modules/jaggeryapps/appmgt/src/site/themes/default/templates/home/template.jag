@@ -378,7 +378,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     function openTool() {
         // var toolLoadingPage = getBallerinaComposerLoader();
 
-        newTab = window.open(integrationCloudURL + '/site/pages/editor.jag?applicationName='+ applicationName, '_blank');
+        newTab = window.open(integrationCloudURL + 'site/pages/editor.jag?applicationName='+ applicationName, '_blank');
         reloadAppHome();
 
         //newTab.document.write(toolLoadingPage);

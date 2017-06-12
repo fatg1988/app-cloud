@@ -15,10 +15,11 @@ function showProgresMessage(message) {
 }
 
 function showErrorMessage() {
+    var contactUsURL = cloudMgtURL + '/site/pages/contact-us.jag?cloud-type=integration_cloud';
     var errorMessage = '<span class="error"><i class="fw fw-error icon">' +
         '</i> Something went wrong! ' +
         'Please <a onclick="reloadPage()">Try again</a> or ' +
-        '<a target="_blank" href="https://cloudmgt.cloudlocal.wso2.com:9444/cloudmgt/site/pages/contact-us.jag?cloud-type=integration_cloud">Report</a> an Issue ... </span>';
+        '<a target="_blank" href="' + contactUsURL + '">Report</a> an Issue ... </span>';
     showProgresMessage(errorMessage);
     $('.blob').fadeOut();
 //    clearInterval(pollEventsOfToolKey);

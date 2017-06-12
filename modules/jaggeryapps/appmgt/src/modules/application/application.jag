@@ -95,7 +95,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
         uploadedFileName = versionHashId + "." + artifactUrl.substring(artifactUrl.lastIndexOf(".") + 1);
     }
 
-    if (sourceLocation == 'true' || sourceLocation == true || appTypeName == BALLERINA_COMPOSER) {
+    if (sourceLocation) {
         sourceLocation = KubernetesProvisioningUtils.getKubernetesValidAppName(applicationName);
     }
 
@@ -106,7 +106,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu, exposureLevel, sourceLocation);
     }
 
-    if (sourceLocation) {
+    if (sourceLocation && (appCreationMethod == START_FROM_SCRATCH)) {
         // invoke mgtapp and create source location
         jagg.module("mgtapp").createSourceLocation(versionHashId, BALLERINA, sourceLocation, modManager.getPropertyValue(BALLERINA_COMPOSER_SAMPLE));
     }
@@ -937,9 +937,6 @@ var buildDeploymentConfigFromDB = function(versionHashId, applicationName, versi
 function buildVolumeMounts(appTypeName, sourceLocation) {
     var volumnMounts = new java.util.ArrayList();
     if (appTypeName == BALLERINA_COMPOSER) {
-
-        // invoke mgtapp and create source location
-        jagg.module("mgtapp").createSourceLocation(BALLERINA, sourceLocation, modManager.getPropertyValue(BALLERINA_COMPOSER_SAMPLE));
 
         var volumnMount = new Packages.org.wso2.appcloud.provisioning.runtime.beans.VolumeMountInfo();
         volumnMount.setMountPath(modManager.getPropertyValue(BALLERINA_SOURCE_PATH) + "/source");

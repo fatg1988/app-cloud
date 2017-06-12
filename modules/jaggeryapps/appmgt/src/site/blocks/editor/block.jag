@@ -32,11 +32,13 @@ jagg.block("editor", {
         var managerModule = jagg.module("manager");
         var ballerinaComposerImage = managerModule.getPropertyValue(BALLERINA_COMPOSER_BASE_IMAGE);
         var domainURL = managerModule.getPropertyValue(APP_LAUNCH_URL_PUBLIC);
+        var cloudMgtURL = managerModule.getPropertyValue(CLOUD_MGT_URL);
 
         return {
             "applicationName" : applicationName,
             "ballerinaComposerImage" : ballerinaComposerImage,
-            "domainURL" : domainURL
+            "domainURL" : domainURL,
+            "cloudMgtURL" : cloudMgtURL
         }
     }
 

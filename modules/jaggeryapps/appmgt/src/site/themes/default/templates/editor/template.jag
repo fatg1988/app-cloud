@@ -25,6 +25,7 @@ jagg.template("editor", function(inputs, outputs, jagg) {
     var applicationName = outputs.applicationName;
     var ballerinaComposerImage = outputs.ballerinaComposerImage;
     var domainURL = outputs.domainURL;
+    var cloudMgtURL = outputs.cloudMgtURL;
 %>
 
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html" charset="utf-8">
@@ -32,6 +33,7 @@ jagg.template("editor", function(inputs, outputs, jagg) {
     var ballerinaComposerImage = '<%=ballerinaComposerImage%>';
     var domainURL = '<%=domainURL%>';
     var BALLERINA_COMPOSER = '<%=BALLERINA_COMPOSER%>';
+    var cloudMgtURL = '<%=cloudMgtURL%>';
 </script>
 
 <link rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('templates/editor/css/preloader.css'))%>"/>
