@@ -106,6 +106,11 @@ var addApplication = function (applicationName, versionName, applicationDescript
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu, exposureLevel, sourceLocation);
     }
 
+    if (sourceLocation == 'true' || sourceLocation == true || appTypeName == BALLERINA_COMPOSER) {
+        // invoke mgtapp and create source location
+        jagg.module("mgtapp").createSourceLocation(BALLERINA, sourceLocation, modManager.getPropertyValue(BALLERINA_COMPOSER_SAMPLE));
+    }
+
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);
     var tagName = applicationRuntime.getTag() +"-"+ versionHashId;
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
@@ -959,6 +964,13 @@ function buildEnvironmentVariable(appTypeName, envs, versionHashId) {
         envs.put("DEBUGGER_PATH_URL", versionHashId + ".bcd." + APP_LAUNCH_URL_PUBLIC);
         envs.put("ROOT_DIR_PATH", modManager.getPropertyValue(BALLERINA_SOURCE_PATH));
         envs.put("TRY_SERVICE_URL", "http://" + versionHashId + ".htp." + APP_LAUNCH_URL_PUBLIC);
+        envs.put("LANG_SERVER", versionHashId + ".bls." + APP_LAUNCH_URL_PUBLIC);
+
+       // var lastModifiedFile = jagg.module("mgtapp").getLastModifiedFile();
+        //if (lastModifiedFile) {
+          //  envs.put("OPEN_FILE", modManager.getPropertyValue(BALLERINA_SOURCE_PATH) + "/source/" + lastModifiedFile);
+        //}
+
     }
 
 }

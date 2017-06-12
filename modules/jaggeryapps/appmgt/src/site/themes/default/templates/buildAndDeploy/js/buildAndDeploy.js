@@ -33,10 +33,14 @@ function loadServiceBalFiles() {
         sourceLocation:sourceLocation
     },function (result) {
         dirList = JSON.parse(result);
-        $('#fileList').html('');
-        $.each(dirList, function(key, val) {
-            $('#fileList').append( '<div class="radio"><label><input type="radio" name="filePath" value="' + dirList[key].key + '">' + dirList[key].value + '</label></div>' );
-        });
+        if (Object.keys(dirList).length == 1) {
+            buildAndDeploy(dirList[0].key);
+        } else {
+            $('#fileList').html('');
+            $.each(dirList, function(key, val) {
+                $('#fileList').append( '<div class="radio"><label><input type="radio" name="filePath" value="' + dirList[key].key + '">' + dirList[key].value + '</label></div>' );
+            });
+        }
     },function (jqXHR, textStatus, errorThrown) {
 
     });

@@ -3,3 +3,4 @@ launcherPath: launcher-path-url
 debuggerPath: debugger-path-url
 rootDirectories: root-dir-path
 tryServiceURL: try-service-url
+langserverPath: lang-server-path

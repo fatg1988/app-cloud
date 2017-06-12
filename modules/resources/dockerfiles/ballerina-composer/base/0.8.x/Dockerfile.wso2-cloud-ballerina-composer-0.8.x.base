@@ -1,7 +1,7 @@
 FROM docker.wso2.com/wso2-cloud/java:ubuntu16.04-open-jdk1.8.0_91
 
 ENV COMPOSER_HOME /srv/ballerina-composer
-ENV APP_VERSION 0.88-SNAPSHOT
+ENV APP_VERSION 0.88
 ENV RUNTIME_DISTRIBUTION_NAME ballerina-tools-$APP_VERSION.zip
 ENV RUNTIME_NAME ballerina-tools-$APP_VERSION
 

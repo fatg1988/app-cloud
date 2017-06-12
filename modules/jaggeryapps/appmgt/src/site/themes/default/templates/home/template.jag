@@ -374,11 +374,14 @@ jagg.template("home", function(inputs, outputs, jagg) {
 <script>
 
     function openTool() {
-        var toolLoadingPage = getBallerinaComposerLoader();
+        // var toolLoadingPage = getBallerinaComposerLoader();
 
-        newTab = window.open('', '_blank');
-        newTab.document.write(toolLoadingPage);
+        newTab = window.open('https://integration.cloudlocal.wso2.com:9453/appmgt/site/pages/editor.jag?applicationName='+ applicationName, '_blank');
+        reloadAppHome();
 
+        //newTab.document.write(toolLoadingPage);
+        //newTab.location.href = ;
+/*
         //newTab.document.write(toolLoadingPage);
         var applicationNameOfTool = applicationName;
         var versionOfTool = BALLERINA_COMPOSER;
@@ -453,6 +456,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
                 timeout: '5000'
             });
         });
+        */
     }
 
   // stop application

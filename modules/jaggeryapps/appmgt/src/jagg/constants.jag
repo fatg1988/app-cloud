@@ -68,6 +68,7 @@ var STOP_CONTAINERS = "Stopping Containers";
 var INGRESS = "Creating ingress";
 var POD_STATUS = "Status";
 var BALLERINA_SOURCE_BUILD = "Building Ballerina source";
+var BALLERINA_SOURCE_LOCATION_CREATION = "Creating Ballerina source location";
 
 var DEFAULT_TEMPLATE = 'DEFAULT_ALL_PERMISSIONS';
 

@@ -17,6 +17,7 @@
 package org.wso2.appcloud.mgt;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,9 +27,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Path("/")
 public class ManagementService {
@@ -198,5 +197,55 @@ public class ManagementService {
 
     }
 
+    @POST
+    @Path("/getLastModifiedBalFile")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getLastModifiedBalFile(FileObj fileObj) {
+        String sourcePath = fileObj.getPath();
+        String startingLocation = System.getenv(Constants.SOURCE_LOCATION) + "/" + sourcePath + "/";
+        log.info("Source location : " + startingLocation);
+        String lastModifiedFile = null;
+
+        List<String> fileList = new ArrayList<>();
+        try {
+            File file = new File(startingLocation);
+            Collection<File> files = FileUtils.listFiles(file, new IOFileFilter() {
+
+                @Override public boolean accept(File file) {
+                    return file.getName().endsWith(".bal");
+                }
+
+                @Override public boolean accept(File file, String s) {
+                    return false;
+                }
+            }, new IOFileFilter() {
+                @Override public boolean accept(File file) {
+                    return !file.getName().contains(".target");
+                }
+
+                @Override public boolean accept(File file, String s) {
+                    return false;
+                }
+            });
+
+            if (files.size() > 0) {
+                Arrays.sort(files.toArray(new File[files.size()]), LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+                for (Iterator<File> iterator = files.iterator(); iterator.hasNext(); ) {
+                    File tmpFile = iterator.next();
+                    lastModifiedFile = tmpFile.getCanonicalPath().substring(startingLocation.length());
+                    break;
+                }
+            } else {
+                lastModifiedFile = "";
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        log.info("lastModifiedFile : " + lastModifiedFile);
+        return lastModifiedFile;
+    }
 
 }
