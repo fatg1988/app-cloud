@@ -45,7 +45,7 @@ var downloadArtifact = function(appType, sourceDir, fileType) {
 };
 
 // create the source location via mgtapp
-var createSourceLocation = function (versionHashId, appType, sourceDir, sample) {
+var createSourceLocation = function (versionKey, appType, sourceDir, sample) {
     var msg = "Creating Ballerina source location";
     addEvent(BALLERINA_SOURCE_LOCATION_CREATION, EVENT_PENDING, msg, versionKey);
 

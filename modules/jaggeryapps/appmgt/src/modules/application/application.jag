@@ -106,9 +106,9 @@ var addApplication = function (applicationName, versionName, applicationDescript
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu, exposureLevel, sourceLocation);
     }
 
-    if (sourceLocation == 'true' || sourceLocation == true || appTypeName == BALLERINA_COMPOSER) {
+    if (sourceLocation) {
         // invoke mgtapp and create source location
-        jagg.module("mgtapp").createSourceLocation(BALLERINA, sourceLocation, modManager.getPropertyValue(BALLERINA_COMPOSER_SAMPLE));
+        jagg.module("mgtapp").createSourceLocation(versionHashId, BALLERINA, sourceLocation, modManager.getPropertyValue(BALLERINA_COMPOSER_SAMPLE));
     }
 
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);

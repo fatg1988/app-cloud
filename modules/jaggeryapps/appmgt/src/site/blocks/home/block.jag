@@ -72,6 +72,7 @@ jagg.block("home", {
         // For a particular appType there is at least one runtime. Here the first runtime is taken
         var allowedContainerSpecs = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
         var isThrottled = throttlingModule.getThrottledStatus(allowedContainerSpecs);
+        var integrationCloudURL = manager.getPropertyValue(INTEGRATION_CLOUD_URL);
 
         return {
             "application" : application,
@@ -90,7 +91,8 @@ jagg.block("home", {
             "replicaCount" : replicaCount,
             "ballerinaComposerImage" : ballerinaComposerImage,
             "domainURL" : domainURL,
-            "isThrottled" : isThrottled
+            "isThrottled" : isThrottled,
+            "integrationCloudURL" : integrationCloudURL
         };
     }
 
