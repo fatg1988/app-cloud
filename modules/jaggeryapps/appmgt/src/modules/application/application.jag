@@ -95,7 +95,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
         uploadedFileName = versionHashId + "." + artifactUrl.substring(artifactUrl.lastIndexOf(".") + 1);
     }
 
-    if (sourceLocation) {
+    if (sourceLocation || appTypeName == BALLERINA_COMPOSER) {
         sourceLocation = KubernetesProvisioningUtils.getKubernetesValidAppName(applicationName);
     }
 

@@ -31,8 +31,14 @@ jagg.block("buildAndDeploy", {
     getOutputs:function (inputs) {
         var modManager = jagg.module("manager");
         var cloudSpecificApplicationRepresentation = modManager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
+
+        var sourceLocation = request.getParameter("sourceLocation");
+        var listOfBalFiles = jagg.module("mgtapp").listSourceDirs(sourceLocation);
+        //var lastModifiedFile = jagg.module("mgtapp").getLastModifiedFile(sourceLocation);
+        //log.info("----" + stringify(lastModifiedFile));
         return {
-            "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation
+            "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation,
+            "listOfBalFiles" : listOfBalFiles
         }
     }
 });

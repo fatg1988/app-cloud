@@ -207,7 +207,6 @@ public class ManagementService {
         log.info("Source location : " + startingLocation);
         String lastModifiedFile = null;
 
-        List<String> fileList = new ArrayList<>();
         try {
             File file = new File(startingLocation);
             Collection<File> files = FileUtils.listFiles(file, new IOFileFilter() {
@@ -231,11 +230,7 @@ public class ManagementService {
 
             if (files.size() > 0) {
                 Arrays.sort(files.toArray(new File[files.size()]), LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-                for (Iterator<File> iterator = files.iterator(); iterator.hasNext(); ) {
-                    File tmpFile = iterator.next();
-                    lastModifiedFile = tmpFile.getCanonicalPath().substring(startingLocation.length());
-                    break;
-                }
+                lastModifiedFile = files.toArray(new File[files.size()])[0].getCanonicalPath().substring(startingLocation.length());
             } else {
                 lastModifiedFile = "";
             }

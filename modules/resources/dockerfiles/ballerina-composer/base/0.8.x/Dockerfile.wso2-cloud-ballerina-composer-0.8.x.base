@@ -1,7 +1,7 @@
 FROM docker.wso2.com/wso2-cloud/java:ubuntu16.04-open-jdk1.8.0_91
 
 ENV COMPOSER_HOME /srv/ballerina-composer
-ENV APP_VERSION 0.88
+ENV APP_VERSION 0.88-SNAPSHOT
 ENV RUNTIME_DISTRIBUTION_NAME ballerina-tools-$APP_VERSION.zip
 ENV RUNTIME_NAME ballerina-tools-$APP_VERSION
 
@@ -23,6 +23,6 @@ RUN chmod +x $COMPOSER_HOME/$RUNTIME_NAME/bin/composer && \
 
 USER wso2user
 WORKDIR $COMPOSER_HOME
-EXPOSE 5056 8289 8290 9090 9091
+EXPOSE 5056 8289 8290 9090 9091 8291
 
 CMD ["bash", "-c", "source $COMPOSER_HOME/init.sh"]

@@ -29,6 +29,9 @@ jagg.module("mgtapp", {
     },
     listSourceDirs: function () {
         return jagg.require(jagg.getModulesDir() + "mgtapp/mgtapp.jag").listSourceDirs.apply(this, arguments);
+    },
+    getLastModifiedFile: function () {
+        return jagg.require(jagg.getModulesDir() + "mgtapp/mgtapp.jag").getLastModifiedFile.apply(this, arguments);
     }
 });
 %>

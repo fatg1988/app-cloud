@@ -607,23 +607,34 @@ function getVersionCount(){
 }
 
 function getUserInputToBuildAndDeploy() {
-    var buildAndDeployRevisionUrl = "buildAndDeploy.jag?appTypeName=" + application.applicationType +
-        "&applicationName=" + applicationName +
-        "&encodedLabels=" + encodedLabels +
-        "&encodedEnvs=" + encodedEnvs +
-        "&newVersion=true" +
-        //"&versionArray=" + encodeURI(versionArray) +
-        "&versionKey=" + selectedApplicationRevision.hashId +
-        "&applicationHashId=" + applicationKey +
-        "&versionName=" + selectedRevision +
-        "&conSpecCpu=" + conSpecCpu +
-        "&conSpecMemory=" + conSpecMemory +
-        "&replicas=" + replicaCount +
-        "&sourceLocation=" + sourceLocation +
-        "&runtimeId=" + selectedApplicationRevision.runtimeId;
+    jagg.post("../blocks/buildAndDeploy/buildAndDeploy.jag", {
+        action:"listSourceDirs",
+        sourceLocation:sourceLocation
+    },function (result) {
+        var dirList = JSON.parse(result);
+        if (Object.keys(dirList).length == 1) {
+            buildAndDeploy();
+        } else {
+            var buildAndDeployRevisionUrl = "buildAndDeploy.jag?appTypeName=" + application.applicationType +
+                "&applicationName=" + applicationName +
+                "&encodedLabels=" + encodedLabels +
+                "&encodedEnvs=" + encodedEnvs +
+                "&newVersion=true" +
+                //"&versionArray=" + encodeURI(versionArray) +
+                "&versionKey=" + selectedApplicationRevision.hashId +
+                "&applicationHashId=" + applicationKey +
+                "&versionName=" + selectedRevision +
+                "&conSpecCpu=" + conSpecCpu +
+                "&conSpecMemory=" + conSpecMemory +
+                "&replicas=" + replicaCount +
+                "&sourceLocation=" + sourceLocation +
+                "&runtimeId=" + selectedApplicationRevision.runtimeId;
 
+            window.location.replace(buildAndDeployRevisionUrl);
+        }
+    },function (jqXHR, textStatus, errorThrown) {
 
-    window.location.replace(buildAndDeployRevisionUrl);
+    });
 }
 
 function buildAndDeploy(){

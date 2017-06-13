@@ -156,7 +156,7 @@ var listSourceDirs = function (sourceLocation) {
 var getLastModifiedFile = function (sourceLocation) {
     var tanantDomain = modManager.getTenantDomain();
     var sourcePath = tanantDomain + "/" + BALLERINA + "/" + sourceLocation;
-    var url = mgtAppUrl + "/getLastModifiedFile";
+    var url = mgtAppUrl + "/getLastModifiedBalFile";
     var retryCount = 5;
     var result = null;
     for (var i = 0; i < retryCount; i++) {
@@ -172,7 +172,7 @@ var getLastModifiedFile = function (sourceLocation) {
             }, 2000);
         }
         i++;
-        log.info("calling listSourceDirs : " + i);
+        log.info("calling getLastModifiedFile : " + i);
     }
 
     if (result == '') {

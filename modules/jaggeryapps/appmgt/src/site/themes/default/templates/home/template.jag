@@ -260,16 +260,14 @@ jagg.template("home", function(inputs, outputs, jagg) {
                       <div class="col-xs-12 col-md-12 col-lg-5 overview-version-btn">
 
                          <% if (application.applicationType == BALLERINA && selectedApplicationRevision.sourceLocation != null) { %>
-                             <% if (versions[BALLERINA_COMPOSER] != null) { %>
-                              <a id="update" onclick="updateVersionPopUp();">
-                                  <div class="btn-create-version">
-                                      <span class="fw-stack fw-lg btn-action-ico">
-                                        <i class="fw fw-circle-outline fw-stack-2x"></i>
-                                        <i class="fw fw-refresh fw-stack-1x"></i>
-                                      </span> Deploy Latest Code
-                                   </div>
-                              </a>
-                             <% } %>
+                          <a id="update" onclick="updateVersionPopUp();">
+                              <div class="btn-create-version">
+                                  <span class="fw-stack fw-lg btn-action-ico">
+                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                                    <i class="fw fw-refresh fw-stack-1x"></i>
+                                  </span> Deploy Latest Code
+                               </div>
+                          </a>
                           <a id="edit-code" onclick="openTool();" >
                               <div class="btn-create-version">
                                   <span class="fw-stack fw-lg btn-action-ico">
