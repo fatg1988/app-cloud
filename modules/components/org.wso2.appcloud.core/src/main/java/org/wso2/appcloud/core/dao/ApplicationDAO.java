@@ -2506,8 +2506,9 @@ public class ApplicationDAO {
                 application.setHashId(resultSet.getString("VERSION_HASH_ID"));
                 application.setApplicationName(resultSet.getString("APPLICATION_NAME"));
                 application.setApplicationType(resultSet.getString("APP_TYPE_NAME"));
-                application.setCpu(resultSet.getInt("CONTAINER_CPU"));
-                application.setRam(resultSet.getInt("CONTAINER_MEM"));
+                application.setCpu(resultSet.getInt("CONTAINER_CPU")*resultSet.getInt("REPLICAS"));
+                application.setReplicas(resultSet.getInt("REPLICAS"));
+                application.setRam(resultSet.getInt("CONTAINER_MEM")*resultSet.getInt("REPLICAS"));
                 tenantApplications.get(tenantId).add(application);
             }
             return tenantApplications;
