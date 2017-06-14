@@ -22,6 +22,7 @@ include("/jagg/constants.jag");
 
 var mod = jagg.module("application");
 var throttlingModule = jagg.module("throttling");
+var applicationModule = jagg.module("application");
 
 (function () {
     var action = request.getParameter("action");
@@ -81,12 +82,14 @@ var throttlingModule = jagg.module("throttling");
 
     } else if (action == "scaleDeployment") {
         try {
+            var isReplicatePossible = false;
             var versionName = request.getParameter("versionName");
             var applicationName = request.getParameter("applicationName");
             var replicaCount = request.getParameter("replicaCount");
             var maxReplicaCount = throttlingModule.getMaxReplicaCount();
-
-            if (replicaCount <= maxReplicaCount) {
+            var versionHashId = applicationModule.getVersionHashId(applicationName, versionName);
+            isReplicatePossible = throttlingModule.isReplicatePossible(replicaCount, versionHashId);
+            if ((replicaCount <= maxReplicaCount) && (isReplicatePossible == true)) {
                 mod.scaleDeployment(applicationName, versionName, replicaCount);
             } else {
                 var message = "Error while scaling deployment for application: " + applicationName + " version : " + versionName + ", given replica count exceeds the tier limit.";

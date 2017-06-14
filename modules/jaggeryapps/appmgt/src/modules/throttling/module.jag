@@ -42,9 +42,10 @@ jagg.module("throttling", {
     },
     isApplicationCreatePossible: function () {
         return jagg.require(jagg.getModulesDir() + "throttling/throttling.jag").isApplicationCreatePossible.apply(this, arguments);
+    },
+    isReplicatePossible: function () {
+        return jagg.require(jagg.getModulesDir() + "throttling/throttling.jag").isReplicatePossible.apply(this, arguments);
     }
-
-
 
 });
 %>

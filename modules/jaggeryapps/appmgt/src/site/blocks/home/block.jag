@@ -68,10 +68,7 @@ jagg.block("home", {
         var ballerinaComposerImage = managerModule.getPropertyValue(BALLERINA_COMPOSER_BASE_IMAGE);
         var domainURL = managerModule.getPropertyValue(APP_LAUNCH_URL_PUBLIC);
         var throttlingModule = jagg.module("throttling");
-        var runtimes = applicationModule.getAllRuntimes(application.applicationType);
-        // For a particular appType there is at least one runtime. Here the first runtime is taken
-        var allowedContainerSpecs = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
-        var isThrottled = throttlingModule.getThrottledStatus(allowedContainerSpecs);
+        var isApplicationStartPossible = throttlingModule.isApplicationStartPossible(selectedVersion.hashId);
         var integrationCloudURL = managerModule.getPropertyValue(INTEGRATION_CLOUD_URL);
 
         return {
@@ -91,8 +88,8 @@ jagg.block("home", {
             "replicaCount" : replicaCount,
             "ballerinaComposerImage" : ballerinaComposerImage,
             "domainURL" : domainURL,
-            "isThrottled" : isThrottled,
-            "integrationCloudURL" : integrationCloudURL
+            "integrationCloudURL" : integrationCloudURL,
+            "isApplicationStartPossible" : isApplicationStartPossible
         };
     }
 
