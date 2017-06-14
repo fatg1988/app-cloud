@@ -51,9 +51,7 @@ jagg.template("buildAndDeploy", function (inputs, outputs, jagg) { %>
         runtimeProperties.push(runtimeProperty);
     }
     runtimeProperties = encodeURIComponent(stringify(runtimeProperties), "UTF-8");
-
     listOfBalFiles = outputs.listOfBalFiles;
-
     %>
 
 <script>

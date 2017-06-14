@@ -27,7 +27,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @Path("/")
 public class ManagementService {
@@ -41,7 +44,8 @@ public class ManagementService {
             @PathParam("sourceDir") String sourceDir,
             @PathParam("sample") String sample) throws IOException {
 
-        String sourceLocation = System.getenv(Constants.SOURCE_LOCATION) + "/" + tenantDomain + "/" + appType + "/" + sourceDir;
+        String sourceLocation =
+                System.getenv(Constants.SOURCE_LOCATION) + "/" + tenantDomain + "/" + appType + "/" + sourceDir;
         File file = new File(sourceLocation);
         log.info("Source location : " + sourceLocation);
 
@@ -53,7 +57,8 @@ public class ManagementService {
 
                 // copy source structure
                 File source = new File(System.getenv(Constants.SAMPLE_LOCATION) + "/" + appType + "/" + sample);
-                log.info("sample location : " + System.getenv(Constants.SAMPLE_LOCATION) + "/" + appType + "/" + sample);
+                log.info(
+                        "sample location : " + System.getenv(Constants.SAMPLE_LOCATION) + "/" + appType + "/" + sample);
                 File dest = new File(sourceLocation);
                 FileUtils.copyDirectory(source, dest);
                 log.info("Sample copied for: " + sourceDir);
@@ -92,13 +97,16 @@ public class ManagementService {
             @PathParam("appType") String appType,
             @PathParam("sourceDir") String sourceDir) {
 
-        String dirPath = System.getenv(Constants.SOURCE_LOCATION) + "/" + tenantDomain + "/" + appType + "/" + sourceDir;
+        String dirPath =
+                System.getenv(Constants.SOURCE_LOCATION) + "/" + tenantDomain + "/" + appType + "/" + sourceDir;
 
         String cleanCommand = "rm -rf " + dirPath + "/target/";
         String createTargetCommand = "mkdir " + dirPath + "/target";
-        String ballerinaRuntime = System.getenv(Constants.BALLERINA_HOME) + "/" + System.getenv(Constants.BALLERINA_RUNTIME) + "/" + "bin/ballerina";
+        String ballerinaRuntime =
+                System.getenv(Constants.BALLERINA_HOME) + "/" + System.getenv(Constants.BALLERINA_RUNTIME) + "/"
+                        + "bin/ballerina";
 
-        String ballerinaBuildCommand = "build service " + dirPath +  "/ -o " + dirPath + "/target/" + sourceDir;
+        String ballerinaBuildCommand = "build service " + dirPath + "/ -o " + dirPath + "/target/" + sourceDir;
         String command = ballerinaRuntime + " " + ballerinaBuildCommand;
 
         log.info("-------------------------------------");
@@ -117,7 +125,7 @@ public class ManagementService {
             p.waitFor();
 
             File f = new File(dirPath + "/target/" + sourceDir + ".bsz");
-            if(f.exists() && !f.isDirectory()) {
+            if (f.exists() && !f.isDirectory()) {
                 log.info("-------------------------------------");
                 log.info("BUILD SUCCESS: " + sourceDir);
                 log.info("-------------------------------------");
@@ -230,7 +238,8 @@ public class ManagementService {
 
             if (files.size() > 0) {
                 Arrays.sort(files.toArray(new File[files.size()]), LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-                lastModifiedFile = files.toArray(new File[files.size()])[0].getCanonicalPath().substring(startingLocation.length());
+                lastModifiedFile = files.toArray(new File[files.size()])[0].getCanonicalPath()
+                        .substring(startingLocation.length());
             } else {
                 lastModifiedFile = "";
             }

@@ -69,7 +69,6 @@ var createSourceLocation = function (versionKey, appType, sourceDir, sample) {
         if (i == retryCount) {
             var msg = "Ballerina source build failed";
             addEvent(BALLERINA_SOURCE_BUILD, EVENT_FAILED, msg, versionKey);
-            // todo: send a mail
         }
     }
 };

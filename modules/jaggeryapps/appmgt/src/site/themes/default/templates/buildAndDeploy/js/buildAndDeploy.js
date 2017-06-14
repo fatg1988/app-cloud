@@ -20,7 +20,6 @@
 var dirList = [];
 $(document).ready(function () {
     var balFiles = JSON.parse(listOfBalFiles);
-    //showLoadingView();
     if (Object.keys(balFiles).length == 1) {
         buildAndDeploy(balFiles[0].key);
     } else {

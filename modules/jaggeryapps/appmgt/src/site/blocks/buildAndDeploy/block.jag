@@ -34,8 +34,6 @@ jagg.block("buildAndDeploy", {
 
         var sourceLocation = request.getParameter("sourceLocation");
         var listOfBalFiles = jagg.module("mgtapp").listSourceDirs(sourceLocation);
-        //var lastModifiedFile = jagg.module("mgtapp").getLastModifiedFile(sourceLocation);
-        //log.info("----" + stringify(lastModifiedFile));
         return {
             "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation,
             "listOfBalFiles" : listOfBalFiles

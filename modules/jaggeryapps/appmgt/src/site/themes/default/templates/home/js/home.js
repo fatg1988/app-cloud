@@ -613,7 +613,7 @@ function getUserInputToBuildAndDeploy() {
     },function (result) {
         var dirList = JSON.parse(result);
         if (Object.keys(dirList).length == 1) {
-            buildAndDeploy();
+            buildAndDeploy(dirList[0].key);
         } else {
             var buildAndDeployRevisionUrl = "buildAndDeploy.jag?appTypeName=" + application.applicationType +
                 "&applicationName=" + applicationName +
@@ -637,7 +637,7 @@ function getUserInputToBuildAndDeploy() {
     });
 }
 
-function buildAndDeploy(){
+function buildAndDeploy(selectedOption){
 
     executeAsync(drawProgressWindow("Deploying latest code..."));
     jagg.post("../blocks/application/application.jag", {
@@ -650,6 +650,7 @@ function buildAndDeploy(){
         conSpecCpu:conSpecCpu,
         conSpecMemory:conSpecMemory,
         replicas:replicaCount,
+        selectedOption: selectedOption,
         sourceLocation:sourceLocation,
         runtimeProperties:runtimeProperties,
         runtimeId:selectedApplicationRevision.runtimeId

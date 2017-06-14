@@ -963,11 +963,6 @@ function buildEnvironmentVariable(appTypeName, envs, versionHashId) {
         envs.put("TRY_SERVICE_URL", "http://" + versionHashId + ".htp." + APP_LAUNCH_URL_PUBLIC);
         envs.put("LANG_SERVER", versionHashId + ".bls." + APP_LAUNCH_URL_PUBLIC);
 
-       // var lastModifiedFile = jagg.module("mgtapp").getLastModifiedFile();
-        //if (lastModifiedFile) {
-          //  envs.put("OPEN_FILE", modManager.getPropertyValue(BALLERINA_SOURCE_PATH) + "/source/" + lastModifiedFile);
-        //}
-
     }
 
 }

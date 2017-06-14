@@ -1,6 +1,23 @@
+/*
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *   WSO2 Inc. licenses this file to you under the Apache License,
+ *   Version 2.0 (the "License"); you may not use this file except
+ *   in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing,
+ *   software distributed under the License is distributed on an
+ *   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *   KIND, either express or implied.  See the License for the
+ *   specific language governing permissions and limitations
+ *   under the License.
+ */
+
 var pollEventsOfToolKey = null;
 var toolVersionHashId = null;
-var checkEndpointExistTimer = 0;
 
 $(document).ready(function() {
     openEditor();
@@ -22,7 +39,7 @@ function showErrorMessage() {
         '<a target="_blank" href="' + contactUsURL + '">Report</a> an Issue ... </span>';
     showProgresMessage(errorMessage);
     $('.blob').fadeOut();
-//    clearInterval(pollEventsOfToolKey);
+    clearInterval(pollEventsOfToolKey);
 }
 
 function showProgressOfEditor() {
@@ -47,12 +64,7 @@ function openEditor() {
     var applicationNameOfTool = applicationName;
     var versionOfTool = BALLERINA_COMPOSER;
 
-
     executeAsync(showProgressOfEditor());
-//    var table = "<tr class='success'><td>Starting Ballerina Composer ... </td>" +
-//        "<td></td>" +
-//        "<td><i class=\"fw fw-check\"></i></td></tr>";
-
     showProgresMessage("Starting Ballerina Composer ...");
 
     // check whether ballerina-composer version is created already
@@ -68,11 +80,6 @@ function openEditor() {
             if (version.status == "running") {
                 loadEditorToTheBrowser();
             } else if (version.status == "stopped" || version.status == "inactive") {
-                // throttle
-                // start the tool
-                // open in new tab
-                // composer will load by polling
-//                executeAsync(showProgressOfEditor());
                 jagg.post("../blocks/application/application.jag", {
                     action: "startApplication",
                     applicationName: applicationNameOfTool,
@@ -80,14 +87,12 @@ function openEditor() {
                 }, function(result) {
 
                 },function(jqXHR, data, errorThrown) {
-                    alert("start app failed");
                     showErrorMessage();
 
                 });
             } else {
                 // version.status == "error"
                 // delete and recreate
-//                executeAsync(showProgressOfEditor());
                 jagg.post("../blocks/application/application.jag", {
                     action:"deleteVersion",
                     versionName:BALLERINA_COMPOSER,
@@ -106,18 +111,15 @@ function openEditor() {
                     },function (result) {
 
                     },function (jqXHR, textStatus, errorThrown) {
-                        alert("delete app create failed");
                         showErrorMessage();
                     });
                 },function (jqXHR, textStatus, errorThrown) {
-                    alert("delete app failed");
                     showErrorMessage();
                 });
             }
         } else {
             // specific version is not exist
             // create version
-//            executeAsync(showProgressOfEditor());
             jagg.post("../blocks/application/application.jag", {
                 action:"createApplication",
                 applicationName:applicationNameOfTool,
@@ -131,13 +133,11 @@ function openEditor() {
             },function (result) {
 
             },function (jqXHR, textStatus, errorThrown) {
-                alert("create app failed");
                 showErrorMessage();
             });
         }
 
     },function (jqXHR, textStatus, errorThrown) {
-        alert("get version by hash id failed");
         showErrorMessage();
     });
 
@@ -153,19 +153,14 @@ function pollEvents() {
         var result = jQuery.parseJSON(result);
         if (result.length > 0) {
             for(var i = 0; i < result.length; i++){
-                var table = '';
-                var statusStyle;
                 var event = result[i];
-                var message = '';
                 if(event.status == "success"){
-                    statusStyle = "success";
                     if (event.name === "Status") {
                         showProgresMessage("Container status " + event.description.toLowerCase() + " ...");
                     } else {
                         showProgresMessage(event.name + " ...");
                     }
                 } else if (event.status == "failed") {
-                    statusStyle = "danger";
                     if (event.name === "Status") {
                         showErrorMessage();
                     } else {
@@ -182,7 +177,6 @@ function pollEvents() {
         }
         if (result.length > 0) {
             for(var i = 0; i < result.length; i++){
-//                var statusStyle;
                 var event = result[i];
                 if (event.name === "Status" && event.status === "success") {
                     clearInterval(pollEventsOfToolKey);
@@ -198,28 +192,10 @@ function pollEvents() {
                             if (result != null) {
                                 toolVersionHashId = result;
 
-//                                var timer = null;
-//                                timer = setInterval(function() {
-//                                    //alert("load endpoints");
-//                                    jagg.post("../blocks/application/application.jag", {
-//                                        action: "loadEndpoints",
-//                                        appType: BALLERINA_COMPOSER,
-//                                        deploymentURL: constructEditorURL(),
-//                                        versionId: ''
-//                                    }, function(result) {
-//
-//                                        var endpoints = JSON.parse(result);
-//                                        alert(endpoints);
-//                                        if (endpoints == null) {
-//
-//                                        } else {
-//                                            clearInterval(timer);
-//                                            loadEditorToTheBrowser();
-//                                        }
-//                                    }, function(jqXHR, data, errorThrown) {
-//
-//                                    });
-//                                }, 3000);
+                                setTimeout(function(){
+                                    console.log("Waiting until haproxy reloads");
+                                }, 5000);
+
                                 loadEditorToTheBrowser();
                             }
                         }, function (jqXHR, textStatus, errorThrown) {
@@ -234,14 +210,8 @@ function pollEvents() {
                     //application deletion is involved with the "Stopping Containers" event if the event name is
                     //"Stopping Containers" the following message is not displayed
                     if (event.name !== "Stopping Containers") {
-                        alert("stopping container");
                         showErrorMessage();
                     }
-//                    setTimeout(redirectEditor, 5000);
-//                    function redirectEditor() {
-//                        alert("amalka");
-//                        window.location.replace("editor.jag?applicationName=" + applicationName);
-//                    }
                 }
             }
 
@@ -261,24 +231,5 @@ function deleteAppCreationEvents() {
         //This just return a boolean from backend
     }, function(jqXHR, textStatus, errorThrown) {
         //do not interrupt the application creation process even deletion of events fails.
-    });
-}
-
-function checkEndpointExist() {
-    jagg.post("../blocks/application/application.jag", {
-        action: "loadEndpoints",
-        appType: BALLERINA_COMPOSER,
-        deploymentURL: constructEditorURL(),
-        versionId: ''
-    }, function(result) {
-        var endpoints = JSON.parse(result);
-        //alert(endpoints);
-        if (endpoints == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }, function(jqXHR, data, errorThrown) {
-
     });
 }

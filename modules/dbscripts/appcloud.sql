@@ -484,7 +484,8 @@ INSERT INTO `AC_TRANSPORT` (`id`, `name`, `port`, `protocol`, `service_prefix`, 
 (11, "http", 9091, "TCP", "bcu", "Ballerina composer UI"),
 (12, "http", 8289, "TCP", "bcb", "Ballerina composer - backend http protocol"),
 (13, "ws", 8290, "TCP", "bcw", "Ballerina composer - backend ws protocol"),
-(14, "ws", 5056, "TCP", "bcd", "Ballerina composer - debug ws protocol");
+(14, "ws", 5056, "TCP", "bcd", "Ballerina composer - debug ws protocol"),
+(15, "ws", 8291, "TCP", "bls", "Ballerina composer - lang server ws protocol");
 
 -- -----------------------------------------------------
 -- Populate Data to `AppCloudDB`.`ApplicationRuntimeService`
@@ -536,7 +537,8 @@ INSERT INTO `AC_RUNTIME_TRANSPORT` (`transport_id`, `runtime_id`) VALUES
 (13, 21),
 (14, 21),
 (7, 22),
-(8, 22);
+(8, 22),
+(15, 21);
 
 INSERT INTO `AC_CONTAINER_SPECIFICATIONS` (`CON_SPEC_NAME`, `CPU`, `MEMORY`, `COST_PER_HOUR`) VALUES
 ('128MB RAM and 0.1x vCPU', 100, 128, 1),
