@@ -898,7 +898,8 @@ var buildDeploymentConfigFromDB = function(versionHashId, applicationName, versi
         //Adding runtime properties to k8 container
         var runtimeProperties = deploymentContainer.getRuntimeProperties();
         var envs = getRuntimeProperties(runtimeProperties);
-        buildEnvironmentVariable(appTypeName, envs, versionHashId);
+        var sourceLocation = KubernetesProvisioningUtils.getKubernetesValidAppName(applicationName);
+        buildEnvironmentVariable(appTypeName, envs, versionHashId, sourceLocation);
         provisioningContainer.setEnvVariables(envs);
 
         var deploymentProxies = deploymentContainer.getServiceProxies();
@@ -952,7 +953,7 @@ function buildVolumeMounts(appTypeName, sourceLocation) {
     return volumnMounts;
 }
 
-function buildEnvironmentVariable(appTypeName, envs, versionHashId) {
+function buildEnvironmentVariable(appTypeName, envs, versionHashId, sourceLocation) {
 
     if (appTypeName == BALLERINA_COMPOSER) {
 
@@ -963,6 +964,10 @@ function buildEnvironmentVariable(appTypeName, envs, versionHashId) {
         envs.put("TRY_SERVICE_URL", "http://" + versionHashId + ".htp." + APP_LAUNCH_URL_PUBLIC);
         envs.put("LANG_SERVER", versionHashId + ".bls." + APP_LAUNCH_URL_PUBLIC);
 
+        var lastModifiedFile = jagg.module("mgtapp").getLastModifiedFile(sourceLocation);
+        if (lastModifiedFile) {
+            envs.put("OPEN_FILE", modManager.getPropertyValue(BALLERINA_SOURCE_PATH) + "/source/" + lastModifiedFile);
+        }
     }
 
 }
@@ -978,7 +983,7 @@ function getContainers(imageName, tag, versionHashId, appServiceName, runtimePro
     container.setBaseImageVersion(tag);
 
     var envs = getRuntimeProperties(runtimeProperties);
-    buildEnvironmentVariable(appTypeName, envs, versionHashId);
+    buildEnvironmentVariable(appTypeName, envs, versionHashId, sourceLocation);
     container.setEnvVariables(envs);
     var serviceProxyList = new java.util.ArrayList();
     var services = ApplicationManager.getTransportsForRuntime(runtimeId);

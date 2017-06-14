@@ -1,7 +1,7 @@
 1. build the mgt-app
 2. create the docker image
-docker build -t registry.local.wso2.com:5000/wso2_appcloud_mgt_app:v1 .
+docker build -t us.gcr.io/wso2-cloud-staging/wso2_cloud_mgt_app:v2 .
 3. push to the docker registry
-docker push registry.local.wso2.com:5000/wso2_appcloud_mgt_app:v1
+docker push us.gcr.io/wso2-cloud-staging/wso2_cloud_mgt_app:v2
 4. create k8s container
 

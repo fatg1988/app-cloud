@@ -194,7 +194,7 @@ function pollEvents() {
 
                                 setTimeout(function(){
                                     console.log("Waiting until haproxy reloads");
-                                }, 5000);
+                                }, 8000);
 
                                 loadEditorToTheBrowser();
                             }
