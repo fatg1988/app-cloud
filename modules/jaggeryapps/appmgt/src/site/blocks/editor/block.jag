@@ -20,24 +20,27 @@
 include('/jagg/constants.jag');
 include("/jagg/jagg.jag");
 
-jagg.block("buildAndDeploy", {
+jagg.block("editor", {
     initialize:function (data) {
 
     },
     getInputs:function () {
 
     },
-
     getOutputs:function (inputs) {
-        var modManager = jagg.module("manager");
-        var cloudSpecificApplicationRepresentation = modManager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
+        var applicationName = inputs.applicationName;
+        var managerModule = jagg.module("manager");
+        var ballerinaComposerImage = managerModule.getPropertyValue(BALLERINA_COMPOSER_BASE_IMAGE);
+        var domainURL = managerModule.getPropertyValue(APP_LAUNCH_URL_PUBLIC);
+        var cloudMgtURL = managerModule.getPropertyValue(CLOUD_MGT_URL);
 
-        var sourceLocation = request.getParameter("sourceLocation");
-        var listOfBalFiles = jagg.module("mgtapp").listSourceDirs(sourceLocation);
         return {
-            "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation,
-            "listOfBalFiles" : listOfBalFiles
+            "applicationName" : applicationName,
+            "ballerinaComposerImage" : ballerinaComposerImage,
+            "domainURL" : domainURL,
+            "cloudMgtURL" : cloudMgtURL
         }
     }
+
 });
 %>

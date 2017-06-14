@@ -1,0 +1,47 @@
+<%
+/*
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *   WSO2 Inc. licenses this file to you under the Apache License,
+ *   Version 2.0 (the "License"); you may not use this file except
+ *   in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing,
+ *   software distributed under the License is distributed on an
+ *   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *   KIND, either express or implied.  See the License for the
+ *   specific language governing permissions and limitations
+ *   under the License.
+ */
+
+include("/jagg/constants.jag")
+include("/jagg/jagg.jag");
+
+jagg.template("header/blank", function(inputs, outputs, jagg) {
+
+    %>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/jquery-1.11.1/jquery.min.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/noty-2.3.5/jquery.noty.packaged.min.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/noty-2.3.5/themes/noty.theme.wso2.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/jagg.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/bootstrap-3.2.0/bootstrap.min.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/select2-4.0.0/select2.full.min.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/select2-4.0.0/select2.min.js'))%>"></script>
+<script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/custom/custom.js'))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/custom/validator.js'))%>"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+
+    <%
+}); %>

@@ -19,27 +19,19 @@
 
 var dirList = [];
 $(document).ready(function () {
-    showLoadingView();
-    loadServiceBalFiles();
+    var balFiles = JSON.parse(listOfBalFiles);
+    if (Object.keys(balFiles).length == 1) {
+        buildAndDeploy(balFiles[0].key);
+    } else {
+        $('#fileList').html('');
+        $.each(balFiles, function(key, val) {
+            $('#fileList').append('<div class="radio"><label><input type="radio" name="filePath" value="' + balFiles[key].key + '">' + balFiles[key].value + '</label></div>' );
+        });
+    }
 });
 
 function showLoadingView() {
     $("#fileList").html('<div><span><i class="fw fw-loader2 fw-spin fw-2x"></i></span></div>');
-}
-
-function loadServiceBalFiles() {
-    jagg.post("../blocks/buildAndDeploy/buildAndDeploy.jag", {
-        action:"listSourceDirs",
-        sourceLocation:sourceLocation
-    },function (result) {
-        dirList = JSON.parse(result);
-        $('#fileList').html('');
-        $.each(dirList, function(key, val) {
-            $('#fileList').append( '<div class="radio"><label><input type="radio" name="filePath" value="' + dirList[key].key + '">' + dirList[key].value + '</label></div>' );
-        });
-    },function (jqXHR, textStatus, errorThrown) {
-
-    });
 }
 
 function goBack() {

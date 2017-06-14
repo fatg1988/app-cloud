@@ -73,6 +73,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     }
     runtimeProperties = encodeURIComponent(stringify(runtimeProperties), "UTF-8");
     var isBallerinaComposerAvailable = versions[BALLERINA_COMPOSER];
+    var integrationCloudURL = outputs.integrationCloudURL;
     var isApplicationStartPossible = outputs.isApplicationStartPossible;
 
 %>
@@ -115,6 +116,7 @@ jagg.template("home", function(inputs, outputs, jagg) {
     var isBallerinaComposerAvailable = <%=isBallerinaComposerAvailable%>
     var BALLERINA_COMPOSER = "<%=BALLERINA_COMPOSER%>";
     var BALLERINA = "<%=BALLERINA%>";
+    var integrationCloudURL = '<%=integrationCloudURL%>';
     var isApplicationStartPossible = <%=isApplicationStartPossible%>;
 
 </script>
@@ -258,17 +260,15 @@ jagg.template("home", function(inputs, outputs, jagg) {
                       <div class="col-xs-12 col-md-12 col-lg-5 overview-version-btn">
 
                          <% if (application.applicationType == BALLERINA && selectedApplicationRevision.sourceLocation != null) { %>
-                             <% if (versions[BALLERINA_COMPOSER] != null) { %>
-                              <a id="update" onclick="updateVersionPopUp();">
-                                  <div class="btn-create-version">
-                                      <span class="fw-stack fw-lg btn-action-ico">
-                                        <i class="fw fw-circle-outline fw-stack-2x"></i>
-                                        <i class="fw fw-refresh fw-stack-1x"></i>
-                                      </span> Deploy Latest Code
-                                   </div>
-                              </a>
-                             <% } %>
-                          <a id="edit-code" onclick="openTool();" >
+                          <a id="update" onclick="updateVersionPopUp();">
+                              <div class="btn-create-version">
+                                  <span class="fw-stack fw-lg btn-action-ico">
+                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                                    <i class="fw fw-refresh fw-stack-1x"></i>
+                                  </span> Deploy Latest Code
+                               </div>
+                          </a>
+                          <a id="edit-code" onclick="openEditor();" >
                               <div class="btn-create-version">
                                   <span class="fw-stack fw-lg btn-action-ico">
                                     <i class="fw fw-circle-outline fw-stack-2x"></i>
@@ -373,86 +373,9 @@ jagg.template("home", function(inputs, outputs, jagg) {
      </div><!-- /.modal -->
 <script>
 
-    function openTool() {
-        var toolLoadingPage = getBallerinaComposerLoader();
-
-        newTab = window.open('', '_blank');
-        newTab.document.write(toolLoadingPage);
-
-        //newTab.document.write(toolLoadingPage);
-        var applicationNameOfTool = applicationName;
-        var versionOfTool = BALLERINA_COMPOSER;
-        executeAsync(drawProgressWindowForTool("Starting ..."));
-        // check whether ballerina-composer version is created already
-        jagg.post("../blocks/application/application.jag", {
-            action:"getVersionByHashId",
-            applicationName:applicationNameOfTool,
-            applicationRevision:versionOfTool
-        },function (result) {
-            var version = JSON.parse(result);
-            if (version != null && version.hashId != null) {
-                toolVersionHashId = version.hashId;
-                // check whether it is already started
-                if (version.status == "running") {
-                    // open the tool by pollEventsOfTool()
-                } else if (version.status == "stopped" || version.status == "inactive") {
-                    // throttle
-                    // start the tool
-                    // open in new tab
-                    jagg.post("../blocks/application/application.jag", {
-                        action: "startApplication",
-                        applicationName: applicationNameOfTool,
-                        applicationRevision: versionOfTool
-                    }, function(result) {
-
-                    },function(jqXHR, data, errorThrown) {
-                        setTimeout(reloadAppHome, 5000);
-                        jagg.message({
-                            content: "Error occurred while starting Ballerina Composer",
-                            type: 'error',
-                            id: 'view_log',
-                            timeout: '5000'
-                        });
-                    });
-                } else {
-                    // version.status == "error"
-                    // todo
-                }
-            } else {
-                // specific version is not exist
-                // create version
-                jagg.post("../blocks/application/application.jag", {
-                    action:"createApplication",
-                    applicationName:applicationNameOfTool,
-                    runtime:21,
-                    appTypeName:BALLERINA_COMPOSER,
-                    applicationRevision:versionOfTool,
-                    conSpec:4,
-                    isNewVersion:true,
-                    appCreationMethod:"custom",
-                    imageId:ballerinaComposerImage
-                },function (result) {
-
-                },function (jqXHR, textStatus, errorThrown) {
-                    setTimeout(reloadAppHome, 5000);
-                    jagg.message({
-                        content: "Error occurred while starting Ballerina Composer",
-                        type: 'error',
-                        id: 'view_log',
-                        timeout: '5000'
-                    });
-                });
-            }
-
-        },function (jqXHR, textStatus, errorThrown) {
-            setTimeout(reloadAppHome, 5000);
-            jagg.message({
-                content: "Error occurred while starting Ballerina Composer",
-                type: 'error',
-                id: 'view_log',
-                timeout: '5000'
-            });
-        });
+    function openEditor() {
+        newTab = window.open(integrationCloudURL + 'site/pages/editor.jag?applicationName='+ applicationName, '_blank');
+        reloadAppHome();
     }
 
   // stop application
@@ -549,142 +472,9 @@ jagg.template("home", function(inputs, outputs, jagg) {
         pollEventsKey = setInterval(pollEvents, 5000);
     }
 
-    function drawProgressWindowForTool(heading){
-        $('#app_creation_progress_modal').modal({ backdrop: 'static', keyboard: false});
-        $("#app_creation_progress_modal").show();
-        $("#modal-title").text(heading);
-        pollEventsOfToolKey = setInterval(pollEventsOfTool, 5000);
-    }
-
     function executeAsync(func) {
         setTimeout(func, 0);
     }
-
-    function pollEventsOfTool(){
-
-
-       jagg.post("../blocks/application/application.jag", {
-            action:"getApplicationCreationEvents",
-            applicationName:applicationName,
-            applicationRevision:BALLERINA_COMPOSER
-
-        },function (result) {
-            var result = jQuery.parseJSON(result);
-            if (result.length == 0 && isBallerinaComposerAvailable) {
-                jagg.post("../blocks/application/application.jag", {
-                    action: "getVersionHashId",
-                    applicationName: applicationName,
-                    applicationRevision: BALLERINA_COMPOSER
-                }, function(result) {
-                    if (result != null) {
-                        toolVersionHashId = result;
-                        //newTab = window.open('', '_blank');
-                        //newTab.document.write(toolLoadingPage);
-                        newTab.location.href = 'http://' + toolVersionHashId + '.bcu.' + domainURL + '/';
-                        $("#app_creation_progress_modal").modal('hide');
-                        window.location.replace("home.jag?applicationKey=<%=applicationKey%>");
-                    }
-                }, function(jqXHR, textStatus, errorThrown) {
-
-                });
-            }
-            if (result.length > 0) {
-                $("#progress_table").html("");
-                $("#app-creation-header-loader").html("");
-                var table = "<table class='table' style='width:100%; color:black'>" ;
-                for(var i = 0; i < result.length; i++){
-                    var statusStyle;
-                    var event = result[i];
-
-                    if(event.status == "success"){
-                        statusStyle = "success";
-                        if (event.name === "Status") {
-                            table = table + "<tr class='" + statusStyle + "'><td>Container status</td>" +
-                                            "<td>" + event.description + "</td>" +
-                                            "<td><i class=\"fw fw-check\"></i></td></tr>";
-                        } else {
-                            table = table + "<tr class='" + statusStyle + "'><td>" + event.name + "</td>" +
-                                            "<td></td>" +
-                                            "<td><i class=\"fw fw-check\"></i></td></tr>";
-                        }
-                    } else if (event.status == "failed") {
-                        statusStyle = "danger";
-                        if (event.name === "Status") {
-                            table = table + "<tr class='" + statusStyle + "'><td>Container status</td>" +
-                                            "<td>" + event.description + "</td>" +
-                                            "<td><i class=\"fw fw-error\"></i></td></tr>";
-                        } else {
-                            table = table + "<tr class='" + statusStyle + "'><td>" + event.name + "</td>" +
-                                            "<td></td>" +
-                                            "<td><i class=\"fw fw-error\"></i></td></tr>";
-                        }
-                    } else if (event.status == "pending"){
-                        if (event.name === "Status") {
-                            statusStyle = "active";
-                            table = table + "<tr class='" + statusStyle + "'><td>Container status</td>" +
-                                            "<td>" + event.description + "</td>" +
-                                            "<td><i class=\"fw fw-loader2 fw-spin\"></i></td></tr>";
-                        } else {
-                            statusStyle = "active";
-                            table = table + "<tr class='" + statusStyle + "'><td>" + event.name + "</td>" +
-                                            "<td></td>" +
-                                            "<td><i class=\"fw fw-loader2 fw-spin\"></i></td></tr>";
-                        }
-                    }
-                }
-                table = table + "</table>";
-                $("#progress_table").html(table);
-            }
-            if (result.length > 0) {
-                for(var i = 0; i < result.length; i++){
-                    var statusStyle;
-                    var event = result[i];
-                    if (event.name === "Status" && event.status === "success") {
-                        clearInterval(pollEventsOfToolKey);
-                        setTimeout(redirectAppHome, 4250);
-                        function redirectAppHome(){
-                            deleteAppCreationEvents(BALLERINA_COMPOSER);
-
-                            jagg.post("../blocks/application/application.jag", {
-                                action:"getVersionHashId",
-                                applicationName:applicationName,
-                                applicationRevision:BALLERINA_COMPOSER
-                            },function (result) {
-                                if (result != null) {
-                                    toolVersionHashId = result;
-                                    setTimeout(function(){
-                                        console.log("Waiting until haproxy reloads");
-                                    }, 10000);
-                                    newTab.location.href = 'http://' + toolVersionHashId + '.bcu.' + domainURL + '/';
-                                    $("#app_creation_progress_modal").modal('hide');
-                                    window.location.replace("home.jag?applicationKey=<%=applicationKey%>");
-                                }
-                            }, function (jqXHR, textStatus, errorThrown) {
-
-                            });
-                        }
-                    } else if(event.status == "failed") {
-                        //When redeploying an application the associated pod is deleted and an event with the name
-                        //"Stopping Containers" is persisted in the database. Due to the pod not getting deleted within the
-                        //specified time period the "Stopping Containers" event gets a status of "failed". Since only
-                        //application deletion is involved with the "Stopping Containers" event if the event name is
-                        //"Stopping Containers" the following message is not displayed
-                        if (event.name !== "Stopping Containers") {
-                            jagg.message({content: "Error occurred while creating " + cloudSpecificApplicationRepresentation.toLowerCase() + ".", type: 'error'});
-                        }
-                        setTimeout(redirectAppListing, 5000);
-                        function redirectAppListing(){
-                            window.location.replace("index.jag");
-                        }
-                    }
-                }
-
-            }
-        }, function (jqXHR, textStatus, errorThrown) {
-             jagg.message({content: "Error occurred while starting " + cloudSpecificApplicationRepresentation.toLowerCase() + ".", type: 'error'});
-        });
-    }
-
 
     function pollEvents(){
         jagg.post("../blocks/application/application.jag", {
