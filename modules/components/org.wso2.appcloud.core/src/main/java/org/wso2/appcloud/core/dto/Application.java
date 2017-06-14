@@ -33,6 +33,7 @@ public class Application {
     private String cloudType;
     private int cpu;
     private int ram;
+    private int replicas;
 
     public Application(){
 
@@ -126,4 +127,8 @@ public class Application {
     public void setRam(int ram) {
         this.ram = ram;
     }
+
+    public int getReplicas() { return replicas; }
+
+    public void setReplicas(int replicas) { this.replicas = replicas; }
 }

@@ -302,10 +302,11 @@ public class SQLQueryConstants {
 
     public static final String GET_RUNNING_APPLICATIONS_OF_A_TENANT =
             "SELECT AC_VERSION.name as VERSION_NAME, AC_VERSION.hash_id as VERSION_HASH_ID, AC_VERSION.tenant_id, " +
-                    "AC_VERSION.con_spec_cpu as CONTAINER_CPU,AC_VERSION.con_spec_memory as CONTAINER_MEM," +
-                    "AC_APPLICATION.name AS APPLICATION_NAME, AC_APP_TYPE.name AS APP_TYPE_NAME FROM AC_VERSION INNER " +
-                    "JOIN AC_APPLICATION ON AC_VERSION.application_id=AC_APPLICATION.id INNER JOIN AC_APP_TYPE " +
-                    "ON AC_APPLICATION.app_type_id = AC_APP_TYPE.id WHERE AC_VERSION.status='running' AND AC_VERSION.tenant_id=?;";
+            "AC_VERSION.con_spec_cpu as CONTAINER_CPU,AC_VERSION.con_spec_memory as CONTAINER_MEM," +
+            "AC_APPLICATION.name AS APPLICATION_NAME, AC_APP_TYPE.name AS APP_TYPE_NAME, AC_DEPLOYMENT.replicas" +
+            " as REPLICAS FROM AC_VERSION INNER JOIN AC_APPLICATION ON AC_VERSION.application_id=AC_APPLICATION.id" +
+            " INNER JOIN AC_APP_TYPE ON AC_APPLICATION.app_type_id = AC_APP_TYPE.id INNER JOIN AC_DEPLOYMENT ON" +
+            " AC_VERSION.hash_id=AC_DEPLOYMENT.name WHERE AC_VERSION.status='running' AND AC_VERSION.tenant_id=?;";
 
     public static final String IS_CUSTOM_DOMAIN_AVAILABLE = "SELECT * FROM AC_APPLICATION WHERE custom_domain=?";
     public static final String IS_CUSTOM_IMAGE_AVAILABLE = "SELECT * FROM AC_CUSTOM_DOCKER_IMAGES WHERE remote_url=? AND tenant_id=?";
