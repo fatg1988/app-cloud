@@ -1,8 +1,8 @@
 1. build the fileserver
 2. create the docker image
-docker build -t registry.local.wso2.com:5000/wso2_appcloud_file_server:v1 .
+docker build -t us.gcr.io/wso2-cloud-staging/wso2_cloud_file_server:v2 .
 3. push to the docker registry
-docker push registry.local.wso2.com:5000/wso2_appcloud_file_server:v1
+docker push us.gcr.io/wso2-cloud-staging/wso2_cloud_file_server:v2
 4. create k8s container
 kubectl create -f fileserver-controller.yaml
 kubectl create -f fileserver-service.yaml

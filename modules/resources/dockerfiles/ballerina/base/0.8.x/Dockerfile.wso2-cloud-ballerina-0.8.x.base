@@ -21,7 +21,7 @@
 FROM docker.wso2.com/wso2-cloud/java:alpine3.4-oracle-jdk1.8.0_112
 
 ENV APP_HOME /srv/ballerina
-ENV APP_VERSION 0.87
+ENV APP_VERSION 0.88
 ENV RUNTIME_DISTRIBUTION_NAME ballerina-$APP_VERSION.zip
 ENV RUNTIME_NAME ballerina-$APP_VERSION
 ADD init.sh /init.sh
