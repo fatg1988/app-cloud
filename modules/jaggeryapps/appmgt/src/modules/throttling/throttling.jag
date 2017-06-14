@@ -153,9 +153,10 @@ var getTenantTotalResourceUsage = function(tenantId){
                 if (applicationList != null) {
                     var app = applicationList.get(i);
                     if (app != null) {
-                        var obj = {};
-                        totalCpu = totalCpu + app.getCpu();
-                        totalRam = totalRam + app.getRam();
+                        if (app.getDefaultVersion() != BALLERINA_COMPOSER) {
+                            totalCpu = totalCpu + app.getCpu();
+                            totalRam = totalRam + app.getRam();
+                        }
                     } else {
                         log.warn("One of the running applications of tenant:" + tenantId + " has a null app.");
                     }
