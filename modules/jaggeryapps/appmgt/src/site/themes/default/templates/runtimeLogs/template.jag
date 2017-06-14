@@ -100,7 +100,7 @@ jagg.template("runtimeLogs", function (inputs, outputs, jagg) {
                             <div class="col-md-4">
                                 <select class="form-control" id="revision" disabled>
                                     <% for(var i = 0; i < revisionsList.length; i++){
-                                       if("ballerina-composer" != revisionsList[i]){
+                                       if(BALLERINA_COMPOSER != revisionsList[i]){
                                         if(selectedRevision == revisionsList[i]){
 
                                     %>

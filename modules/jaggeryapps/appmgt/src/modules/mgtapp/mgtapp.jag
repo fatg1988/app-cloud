@@ -45,28 +45,38 @@ var downloadArtifact = function(appType, sourceDir, fileType) {
 };
 
 // create the source location via mgtapp
-var createSourceLocation = function (appType, sourceDir, sample) {
-    var tanantDomain = modManager.getTenantDomain();
-    var url = mgtAppUrl + "/createSource/" + tanantDomain + "/" + appType + "/" + sourceDir + "/" + sample;
+var createSourceLocation = function (versionKey, appType, sourceDir, sample) {
+    var msg = "Creating Ballerina source location";
+    addEvent(BALLERINA_SOURCE_LOCATION_CREATION, EVENT_PENDING, msg, versionKey);
+
+    var tenantDomain = modManager.getTenantDomain();
+    var url = mgtAppUrl + "/createSource/" + tenantDomain + "/" + appType + "/" + sourceDir + "/" + sample;
     var retryCount = 5;
     for (var i = 0; i < retryCount; i++) {
         try {
             var result = get(url, null, headers, type);
             if (result) {
+                var msg = "Creating Ballerina source location succeeded";
+                addEvent(BALLERINA_SOURCE_LOCATION_CREATION, EVENT_SUCCEEDED, msg, versionKey);
+                log.info("Create source location succeeded. : " + tenantDomain + "/" + appType + "/" + sourceDir);
                 break;
             }
         } catch (e) {
-            log.info("create source failed");
+            log.warn("Create source location failed. Retrying : " + tenantDomain + "/" + appType + "/" + sourceDir);
             setTimeout(function(){}, 2000);
         }
         i++;
+        if (i == retryCount) {
+            var msg = "Ballerina source build failed";
+            addEvent(BALLERINA_SOURCE_BUILD, EVENT_FAILED, msg, versionKey);
+        }
     }
 };
 
 // build the source via mgtapp
 var buildSource = function (appType, sourceDir, versionKey) {
 
-    var msg = "Stariting Ballerina source build";
+    var msg = "Starting Ballerina source build";
     addEvent(BALLERINA_SOURCE_BUILD, EVENT_PENDING, msg, versionKey);
 
     var tanantDomain = modManager.getTenantDomain();
@@ -104,7 +114,7 @@ var addEvent = function(name, status, description, versionHashId) {
 
 var listSourceDirs = function (sourceLocation) {
     var tanantDomain = modManager.getTenantDomain();
-    var sourcePath = tanantDomain + "/ballerina/" + sourceLocation;
+    var sourcePath = tanantDomain + "/" + BALLERINA + "/" + sourceLocation;
     var url = mgtAppUrl + "/listSourceDirs";
     var retryCount = 5;
     var result = null;
@@ -140,5 +150,34 @@ var listSourceDirs = function (sourceLocation) {
     }
 
     return jsonResponse;
+};
+
+var getLastModifiedFile = function (sourceLocation) {
+    var tanantDomain = modManager.getTenantDomain();
+    var sourcePath = tanantDomain + "/" + BALLERINA + "/" + sourceLocation;
+    var url = mgtAppUrl + "/getLastModifiedBalFile";
+    var retryCount = 5;
+    var result = null;
+    for (var i = 0; i < retryCount; i++) {
+        try {
+            var data = {path: sourcePath};
+            result = post(url, stringify(data), headers, "json");
+            if (result != null) {
+                break;
+            }
+        } catch (e) {
+            log.error(e);
+            setTimeout(function () {
+            }, 2000);
+        }
+        i++;
+        log.info("calling getLastModifiedFile : " + i);
+    }
+
+    if (result == '') {
+        return null;
+    }
+
+    return result;
 };
 %>

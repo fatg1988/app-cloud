@@ -25,3 +25,14 @@ UPDATE `AC_APP_TYPE` SET `description` = 'Allows you to deploy Java Microservice
 -- update ballerina composer container spec
 UPDATE `AC_RUNTIME_CONTAINER_SPECIFICATIONS` SET `CON_SPEC_ID` = 4 WHERE `id` = 21;
 
+-- add new runtime
+INSERT INTO AC_RUNTIME (name,image_name,tag,description) VALUES ('Custom Docker http-8280 https-8243','custom','customtag','OS:Custom, JAVA Version:custom');
+
+-- link apptype with new runtime
+INSERT INTO AC_APP_TYPE_RUNTIME VALUES(7,22);
+
+-- link runtimes and transports
+INSERT INTO AC_RUNTIME_TRANSPORT VALUES (7,22),(8,22);
+
+-- setting runtime container spec new runtime
+INSERT INTO AC_RUNTIME_CONTAINER_SPECIFICATIONS VALUES (22, 4);

@@ -34,7 +34,7 @@ jagg.template("settings", function (inputs, outputs, jagg) { %>
     var versionString = "";
     for (var version in versions) {
         var versionName = versions[version].versionName;
-        if ("ballerina-composer" != versionName) {
+        if (BALLERINA_COMPOSER != versionName) {
             if (defaultVersion == versionName) {
                 versionString += "<option" + ' value="' + versionName + '" ' + " selected>" + versionName + "</option>";
             } else {

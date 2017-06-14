@@ -298,6 +298,8 @@ do
     -Dkubernetes.certs.ca.file=/mnt/certs/ca.pem \
     -Dkubernetes.certs.client.key.file=/mnt/certs/admin-key.pem \
     -Dkubernetes.certs.client.file=/mnt/certs/admin.pem \
+    -Dkubernetes.auth.basic.username=vagrant \
+    -Dkubernetes.auth.basic.password=vagrant \
     -Dkubernetes.auth.tryServiceAccount=false \
     -Dkubernetes.tls.versions=TLSv1.2,TLSv1.1,TLSv1 \
     org.wso2.carbon.bootstrap.Bootstrap $*

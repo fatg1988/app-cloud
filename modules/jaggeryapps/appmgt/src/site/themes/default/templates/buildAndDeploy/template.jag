@@ -51,7 +51,7 @@ jagg.template("buildAndDeploy", function (inputs, outputs, jagg) { %>
         runtimeProperties.push(runtimeProperty);
     }
     runtimeProperties = encodeURIComponent(stringify(runtimeProperties), "UTF-8");
-
+    listOfBalFiles = outputs.listOfBalFiles;
     %>
 
 <script>
@@ -72,6 +72,7 @@ jagg.template("buildAndDeploy", function (inputs, outputs, jagg) { %>
     var runtimeId = '<%=runtimeId%>';
     var pollEventsKey = null;
     var cloudSpecificApplicationRepresentation = '<%=cloudSpecificApplicationRepresentation%>';
+    var listOfBalFiles = '<%=listOfBalFiles%>';
 
 </script>
 

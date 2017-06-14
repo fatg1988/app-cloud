@@ -34,8 +34,8 @@ jagg.block("settings", {
 
         var modManager = jagg.module("manager");
         var cloudSpecificApplicationRepresentation = modManager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
-        var privateURL = modManager.getPropertyValue("ApplicationLaunchBaseURL.Private");
-        var publicURL = modManager.getPropertyValue("ApplicationLaunchBaseURL.Public");
+        var privateURL = modManager.getPropertyValue(APP_LAUNCH_URL_PRIVATE);
+        var publicURL = modManager.getPropertyValue(APP_LAUNCH_URL_PUBLIC);
         var tenantDomain = modManager.getTenantDomain().replace(".","-");
         var maxReplicaCount = throttlingModule.getMaxReplicaCount();
         var requestIncreaseReplicaLimitSubjectMessage = 'Request to increase replica limit';

@@ -76,7 +76,7 @@ $(document).ready(function () {
         var parsedResult = JSON.parse(result);
         if(parsedResult.length == 0){
             $(".tag-list").prepend(
-                '<div class="row"><div id="push"></div><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">No tags are created yet. </div></div>');
+                '<div class="row"><div id="push"></div><div id="noTags" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">No tags are created yet. </div></div>');
         } else {
             for (var i = 0; i < parsedResult.length; i++) {
                 $(".tag-list").prepend(
@@ -127,6 +127,7 @@ $(document).ready(function () {
                 '</span>' +
                 '</div>' +
                 '</div>');
+                $("#noTags").css("display","none");
         });
 
         $(document).on('click', '.fw-edit', function () {

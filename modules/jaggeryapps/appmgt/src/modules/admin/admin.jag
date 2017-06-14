@@ -227,7 +227,7 @@ var stopIdleApplicationsByRunningTimePeriod = function (numberOfHours) {
         }
     }
 
-    var toolApplications = ApplicationManager.getRunningToolAppsByRunningTimePeriod(numberOfHours, "ballerina-composer");
+    var toolApplications = ApplicationManager.getRunningToolAppsByRunningTimePeriod(numberOfHours, BALLERINA_COMPOSER);
     log.debug('number of tool applications found:' + toolApplications.length);
     for (var i = 0; i < toolApplications.length; i++) {
         var toolApplication = toolApplications[i];

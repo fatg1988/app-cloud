@@ -1,0 +1,271 @@
+/*
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *   WSO2 Inc. licenses this file to you under the Apache License,
+ *   Version 2.0 (the "License"); you may not use this file except
+ *   in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing,
+ *   software distributed under the License is distributed on an
+ *   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *   KIND, either express or implied.  See the License for the
+ *   specific language governing permissions and limitations
+ *   under the License.
+ */
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+*:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+svg:not(:root) {
+    overflow: hidden;
+}
+
+* {
+    outline: none !important;
+}
+
+html {
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    font-size: 10px;
+}
+body {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0;
+    font-family: \"Roboto\", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #333333;
+    background-color: #282828;
+}
+
+body > #wrap,
+body > #wrap > #body,
+.loading {
+    height: 100%;
+}
+
+.loading-events {
+    position: absolute;
+    z-index: 10000001;
+    top: 70%;
+    left: 50%;
+    height: 75px;
+    text-align: center;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.loading-events .error {
+    background-color: #802222;
+    color: white;
+    display: block;
+    padding: 10px;
+}
+
+.loading-events > .error > .icon {
+    padding-right: 5px;
+}
+
+.loading-events h3 {
+    font-size: 14px;
+    font-weight: 100;
+    color: #fefefe;
+}
+
+.loading {
+    position: relative; }
+
+.loading[data-loading-style=overlay] .loading-bg {
+    background: #222222;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 10000000;
+    opacity: 0.6;
+    filter: alpha(opacity=60); }
+.loading[data-loading-style=icon-only] .loading-bg {
+    display: none; }
+.loading[data-loading-inverse=true] .loading-bg {
+    background: #fefefe; }
+.loading[data-loading-inverse=true] .loading-animation .logo .pulse-line,
+.loading[data-loading-inverse=true] .loading-animation .logo .circle {
+    stroke: #222222; }
+.loading[data-loading-inverse=true] .loading-animation p {
+    color: #222222; }
+.loading .loading-animation {
+    position: absolute;
+    z-index: 10000001;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 75px;
+    text-align: center;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); }
+.loading .loading-animation .logo {
+    position: relative;
+    width: 50px;
+    margin: 0 auto; }
+.loading .loading-animation .logo img {
+    max-width: 50px; }
+.loading .loading-animation .logo .pulse-line,
+.loading .loading-animation .logo .circle {
+    fill: none;
+    stroke: #fefefe; }
+.loading .loading-animation .logo .circle {
+    stroke-dasharray: 100;
+    opacity: 0.5;
+    filter: alpha(opacity=50); }
+.loading .loading-animation .logo .pulse-line {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: dash 4s linear  infinite;
+    opacity: 0;
+    filter: alpha(opacity=0); }
+.loading .loading-animation .logo .signal {
+    border: 5px solid #fefefe;
+    border-radius: 50px;
+    height: 50px;
+    width: 50px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    position: absolute;
+    top: 0;
+    animation: pulsate 4s ease-out infinite;
+    animation-delay: 1.5s;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); }
+.loading .loading-animation p {
+    color: #fefefe;
+    text-align: center;
+    font-size: 11px;
+    margin-top: 4px;
+    text-transform: uppercase; }
+@keyframes dash {
+    0% {
+        opacity: 0.9;
+        filter: alpha(opacity=90); }
+    10% {
+        stroke-dashoffset: 200;
+        opacity: 0.9;
+        filter: alpha(opacity=90); }
+    70% {
+        stroke-dashoffset: 500;
+        opacity: 0.9;
+        filter: alpha(opacity=90); }
+    80% {
+        opacity: 0;
+        filter: alpha(opacity=0); }
+    100% {
+        opacity: 0;
+        filter: alpha(opacity=0); } }
+@keyframes pulsate {
+    0%, 30% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        -webkit-transform: scale(0.9);
+        -moz-transform: scale(0.9);
+        -ms-transform: scale(0.9);
+        -o-transform: scale(0.9);
+        transform: scale(0.9); }
+    40% {
+        opacity: 1;
+        filter: alpha(opacity=100); }
+    60% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        -webkit-transform: scale(1.2);
+        -moz-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        -o-transform: scale(1.2);
+        transform: scale(1.2); } }
+
+.loading > .loading-animation {
+    width: 200px;
+}
+.loading > .loading-animation > .blob {
+    width: 2rem;
+    height: 2rem;
+    background: rgba(230, 230, 230, 0.85);
+    border-radius: 50%;
+    position: absolute;
+    left: calc(50% - 1rem);
+    top: calc(50% + 3.5rem);
+    /*box-shadow: 0 0 1rem rgba(255, 255, 255, 0.25);*/
+}
+
+.loading-animation > .blob-2 { animation: animate-to-2 1.5s infinite; }
+.loading-animation > .blob-3 { animation: animate-to-3 1.5s infinite; }
+.loading-animation > .blob-1 { animation: animate-to-1 1.5s infinite; }
+.loading-animation > .blob-4 { animation: animate-to-4 1.5s infinite; }
+.loading-animation > .blob-0 { animation: animate-to-0 1.5s infinite; }
+.loading-animation > .blob-5 { animation: animate-to-5 1.5s infinite; }
+
+.loading-bg {
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+
+@keyframes animate-to-2 {
+    25%, 75% { transform: translateX(-1.5rem) scale(0.75); }
+    95% { transform: translateX(0rem) scale(1); }
+}
+
+@keyframes animate-to-3 {
+    25%, 75% { transform: translateX(1.5rem) scale(0.75); }
+    95% { transform: translateX(0rem) scale(1); }
+}
+
+@keyframes animate-to-1 {
+    25% { transform: translateX(-1.5rem) scale(0.75); }
+    50%, 75% { transform: translateX(-4.5rem) scale(0.6); }
+    95% { transform: translateX(0rem) scale(1); }
+}
+
+@keyframes animate-to-4 {
+    25% { transform: translateX(1.5rem) scale(0.75); }
+    50%, 75% { transform: translateX(4.5rem) scale(0.6); }
+    95% { transform: translateX(0rem) scale(1); }
+}
+
+@keyframes animate-to-0 {
+    25% { transform: translateX(-1.5rem) scale(0.75); }
+    50% { transform: translateX(-4.5rem) scale(0.6); }
+    75% { transform: translateX(-7.5rem) scale(0.5); }
+    95% { transform: translateX(0rem) scale(1); }
+}
+
+@keyframes animate-to-5 {
+    25% { transform: translateX(1.5rem) scale(0.75); }
+    50% { transform: translateX(4.5rem) scale(0.6); }
+    75% { transform: translateX(7.5rem) scale(0.5); }
+    95% { transform: translateX(0rem) scale(1); }
+}

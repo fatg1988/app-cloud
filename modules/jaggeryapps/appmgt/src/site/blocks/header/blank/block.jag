@@ -16,28 +16,19 @@
  *   specific language governing permissions and limitations
  *   under the License.
  */
-
-include('/jagg/constants.jag');
 include("/jagg/jagg.jag");
+include("/jagg/constants.jag");
 
-jagg.block("buildAndDeploy", {
-    initialize:function (data) {
+jagg.block("header/blank", {
+
+    initialize: function (data) {
 
     },
-    getInputs:function () {
+    getInputs: function () {
 
     },
+    getOutputs: function (inputs) {
 
-    getOutputs:function (inputs) {
-        var modManager = jagg.module("manager");
-        var cloudSpecificApplicationRepresentation = modManager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
-
-        var sourceLocation = request.getParameter("sourceLocation");
-        var listOfBalFiles = jagg.module("mgtapp").listSourceDirs(sourceLocation);
-        return {
-            "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation,
-            "listOfBalFiles" : listOfBalFiles
-        }
     }
 });
 %>

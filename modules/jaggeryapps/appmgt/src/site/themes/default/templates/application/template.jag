@@ -110,6 +110,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
     var versionList = "<%=versionList%>";
     var option = "<%=option%>";
     var sampleArtifactURL;
+    var BALLERINA = "<%=BALLERINA%>";
 
     $(document).ready(function(){
             if (newVersion == "true") {
@@ -911,7 +912,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
             $('#runtime').val() > 0 && checkApplicationVersionExistence($('#applicationRevision').val())) {// mandatory validations for all app types
             if (appTypeName == custom) { // validations for custom app type
                     $("#add-application").prop("disabled", false); // for the custm app type mandatory fields are enough.
-            } else if (appTypeName == 'ballerina' && option == 'start-from-scratch') {
+            } else if (appTypeName == BALLERINA && option == 'start-from-scratch') {
                 $("#add-application").prop("disabled", false);
             } else {
                 var isFileUploaded = (isMultiArtifactsSupported ? isMultiArtifactsUploaded(): $("#uploadedFileName").val());

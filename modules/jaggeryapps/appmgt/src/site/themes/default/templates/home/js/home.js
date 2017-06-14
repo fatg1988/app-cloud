@@ -188,7 +188,7 @@ function displayApplicationInactiveMessage() {
                      modalStatus: true,
                      type: 'warning',
                      timeout: 15000,
-                     content: "<b>This " + cloudSpecificApplicationRepresentation.toLowerCase() + " is stopped because 12 hours have passed after it was last started.</b></br>" +
+                     content: "<b>This " + cloudSpecificApplicationRepresentation.toLowerCase() + " is stopped because 9 hours have passed after it was last started.</b></br>" +
                               "This is a limitation of free accounts in " + pageTitle + "</br> To restart, click the <b>Start</b>. button.</br>" +
                               "<a href='"+requestNewAppTypeURL+"' target='_blank'>Contact us</a> if you need any help."
                  });
@@ -322,7 +322,7 @@ function changeSelectedRevision(newRevision){
     // Change version status in UI
     if(selectedApplicationRevision.status == APPLICATION_RUNNING){
         $(".overview-version-btn").empty();
-        if (application.applicationType == "ballerina" && selectedApplicationRevision.sourceLocation != null) {
+        if (application.applicationType == BALLERINA && selectedApplicationRevision.sourceLocation != null) {
             $(".overview-version-btn").html(
                 "<a id='update' onclick='updateVersionPopUp();'>" +
                 "<div class='btn-create-version'>" +
@@ -359,7 +359,7 @@ function changeSelectedRevision(newRevision){
 
     } else if(selectedApplicationRevision.status == APPLICATION_STOPPED || selectedApplicationRevision.status == APPLICATION_INACTIVE){
         $(".overview-version-btn").empty();
-        if (application.applicationType == "ballerina" && selectedApplicationRevision.sourceLocation != null) {
+        if (application.applicationType == BALLERINA && selectedApplicationRevision.sourceLocation != null) {
             $(".overview-version-btn").html(
                 "<a id='update' onclick='updateVersionPopUp()'>" +
                 "<div class='btn-create-version'>" +
@@ -607,26 +607,37 @@ function getVersionCount(){
 }
 
 function getUserInputToBuildAndDeploy() {
-    var buildAndDeployRevisionUrl = "buildAndDeploy.jag?appTypeName=" + application.applicationType +
-        "&applicationName=" + applicationName +
-        "&encodedLabels=" + encodedLabels +
-        "&encodedEnvs=" + encodedEnvs +
-        "&newVersion=true" +
-        //"&versionArray=" + encodeURI(versionArray) +
-        "&versionKey=" + selectedApplicationRevision.hashId +
-        "&applicationHashId=" + applicationKey +
-        "&versionName=" + selectedRevision +
-        "&conSpecCpu=" + conSpecCpu +
-        "&conSpecMemory=" + conSpecMemory +
-        "&replicas=" + replicaCount +
-        "&sourceLocation=" + sourceLocation +
-        "&runtimeId=" + selectedApplicationRevision.runtimeId;
+    jagg.post("../blocks/buildAndDeploy/buildAndDeploy.jag", {
+        action:"listSourceDirs",
+        sourceLocation:sourceLocation
+    },function (result) {
+        var dirList = JSON.parse(result);
+        if (Object.keys(dirList).length == 1) {
+            buildAndDeploy(dirList[0].key);
+        } else {
+            var buildAndDeployRevisionUrl = "buildAndDeploy.jag?appTypeName=" + application.applicationType +
+                "&applicationName=" + applicationName +
+                "&encodedLabels=" + encodedLabels +
+                "&encodedEnvs=" + encodedEnvs +
+                "&newVersion=true" +
+                //"&versionArray=" + encodeURI(versionArray) +
+                "&versionKey=" + selectedApplicationRevision.hashId +
+                "&applicationHashId=" + applicationKey +
+                "&versionName=" + selectedRevision +
+                "&conSpecCpu=" + conSpecCpu +
+                "&conSpecMemory=" + conSpecMemory +
+                "&replicas=" + replicaCount +
+                "&sourceLocation=" + sourceLocation +
+                "&runtimeId=" + selectedApplicationRevision.runtimeId;
 
+            window.location.replace(buildAndDeployRevisionUrl);
+        }
+    },function (jqXHR, textStatus, errorThrown) {
 
-    window.location.replace(buildAndDeployRevisionUrl);
+    });
 }
 
-function buildAndDeploy(){
+function buildAndDeploy(selectedOption){
 
     executeAsync(drawProgressWindow("Deploying latest code..."));
     jagg.post("../blocks/application/application.jag", {
@@ -639,6 +650,7 @@ function buildAndDeploy(){
         conSpecCpu:conSpecCpu,
         conSpecMemory:conSpecMemory,
         replicas:replicaCount,
+        selectedOption: selectedOption,
         sourceLocation:sourceLocation,
         runtimeProperties:runtimeProperties,
         runtimeId:selectedApplicationRevision.runtimeId

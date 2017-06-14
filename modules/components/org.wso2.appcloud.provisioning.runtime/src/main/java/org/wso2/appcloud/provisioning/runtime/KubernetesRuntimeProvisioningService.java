@@ -384,7 +384,20 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
         if (podList != null) {
             try {
                 int podCounter = 1;
-                for (Pod pod : podList.getItems()) {
+
+                /** Sorting the podList
+                 */
+                List<Pod> unsortedList = podList.getItems();
+                Collections.sort(unsortedList, new Comparator<Pod>() {
+                    //Sort podList by app creation time
+                    @Override
+                    public int compare(Pod firstPod, Pod secondPod) {
+                        return firstPod.getMetadata().getCreationTimestamp().toString()
+                                       .compareTo(secondPod.getMetadata().getCreationTimestamp().toString());
+                    }
+                });
+
+                for (Pod pod : unsortedList) {
                     for (io.fabric8.kubernetes.api.model.Container container : KubernetesHelper.getContainers(pod)) {
                         //Get logs from last pod if restart count > 0
                         if(pod.getStatus().getContainerStatuses().size() > 0 &&
@@ -1099,6 +1112,7 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
                 if(pod.getStatus().getContainerStatuses().size() > 0) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("podName", pod.getMetadata().getName());
+                    jsonObject.put("creationTime", pod.getMetadata().getCreationTimestamp());
                     jsonObject.put("restartCount", pod.getStatus().getContainerStatuses().get(0).getRestartCount());
                     jsonArray.put(jsonObject);
                 } else {
@@ -1111,7 +1125,26 @@ public class KubernetesRuntimeProvisioningService implements RuntimeProvisioning
                     jsonArray.put(jsonObject);
                 }
             }
-            return jsonArray;
+            /**Sorting jsonArray
+             */
+            JSONArray sortedJsonArray = new JSONArray();
+            List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                jsonValues.add(jsonArray.getJSONObject(i));    // put all JSON objects to the array list
+            }
+            Collections.sort(jsonValues, new Comparator<JSONObject>() {
+                //Sort by app creation time
+                @Override
+                public int compare(JSONObject firstObject, JSONObject secondObject) {
+                    return firstObject.get("creationTime").toString()
+                                      .compareTo(secondObject.get("creationTime").toString());
+                }
+            });
+            for (int i = 0; i < jsonArray.length(); i++) {
+                sortedJsonArray.put(jsonValues.get(i));
+            }
+            return sortedJsonArray;
         } else {
             String message = "Could not find a pod associated with pod for application : " + applicationContext.getId() +
                     ", version : " + applicationContext.getVersion();

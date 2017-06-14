@@ -66,7 +66,10 @@ jagg.block("home", {
         var replicaCount = applicationModule.getReplicaCountForVersion(application.applicationName, selectedRevision);
 
         var ballerinaComposerImage = managerModule.getPropertyValue(BALLERINA_COMPOSER_BASE_IMAGE);
-        var domainURL = managerModule.getPropertyValue("ApplicationLaunchBaseURL.Public");
+        var domainURL = managerModule.getPropertyValue(APP_LAUNCH_URL_PUBLIC);
+        var throttlingModule = jagg.module("throttling");
+        var isApplicationStartPossible = throttlingModule.isApplicationStartPossible(selectedVersion.hashId);
+        var integrationCloudURL = managerModule.getPropertyValue(INTEGRATION_CLOUD_URL);
 
         return {
             "application" : application,
@@ -84,7 +87,9 @@ jagg.block("home", {
             "tenantDomain" : tenantDomain,
             "replicaCount" : replicaCount,
             "ballerinaComposerImage" : ballerinaComposerImage,
-            "domainURL" : domainURL
+            "domainURL" : domainURL,
+            "integrationCloudURL" : integrationCloudURL,
+            "isApplicationStartPossible" : isApplicationStartPossible
         };
     }
 

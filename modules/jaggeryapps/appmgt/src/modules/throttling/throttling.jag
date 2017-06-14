@@ -76,10 +76,11 @@ var isApplicationStartPossible = function(versionHashId) {
     }
     // check cpu and memory usage
     var versionInfo = applicationModule.getVersionByHashId(versionHashId);
+    var replicaCountOfApp = ApplicationManager.getReplicaCountForVersion(versionHashId);
     var tenantId = manager.getTenantId(true);
     var tenantTotalResourceUsage = getTenantTotalResourceUsage(tenantId);
-    var aggregateCpu = tenantTotalResourceUsage["totalCpu"] + parseInt(versionInfo.conSpecMemory);
-    var aggregateMemory = tenantTotalResourceUsage["totalRam"] + parseInt(versionInfo.conSpecMemory);
+    var aggregateCpu = tenantTotalResourceUsage["totalCpu"] + parseInt(versionInfo.conSpecCpu*replicaCountOfApp);
+    var aggregateMemory = tenantTotalResourceUsage["totalRam"] + parseInt(versionInfo.conSpecMemory*replicaCountOfApp);
     if (aggregateCpu > subscription.maxCpu || aggregateMemory > subscription.maxMemory) {
         return false;
     }
@@ -164,7 +165,7 @@ var getTenantTotalResourceUsage = function(tenantId){
             }
         }
         return { "totalCpu": totalCpu,
-            "totalRam": totalRam };
+                 "totalRam": totalRam };
     }
 };
 
@@ -189,6 +190,23 @@ var getthrottledAllowedContainerSpecs = function(allowedContainerSpecs){
         }
     }
     return possibleContainerSpecs;
+};
+
+var isReplicatePossible = function (replicaCount, versionHashId) {
+    // check cpu and memory usage
+    var versionInfo = applicationModule.getVersionByHashId(versionHashId);
+    var subscription = subscriptionManager.getSubscription();
+    var tenantId = manager.getTenantId(true);
+    var tenantTotalResourceUsage = getTenantTotalResourceUsage(tenantId);
+    var currentReplicaForVersion = ApplicationManager.getReplicaCountForVersion(versionHashId);
+    var additionalReplicaCount = replicaCount - currentReplicaForVersion;
+    var aggregateCpu = tenantTotalResourceUsage["totalCpu"] + parseInt(additionalReplicaCount * versionInfo.conSpecCpu);
+    var aggregateMemory = tenantTotalResourceUsage["totalRam"] + parseInt(additionalReplicaCount * versionInfo
+                .conSpecMemory);
+    if (aggregateCpu > subscription.maxCpu || aggregateMemory > subscription.maxMemory) {
+        return false;
+    }
+    return true;
 };
 
 %>

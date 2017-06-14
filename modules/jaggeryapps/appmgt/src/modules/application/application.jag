@@ -45,6 +45,8 @@ var appTypesProperties = require(parsedObject);
 var subscriptionManager = jagg.module("subscription");
 var subscription = subscriptionManager.getSubscription();
 
+var APP_LAUNCH_URL_PUBLIC = modManager.getPropertyValue(APP_LAUNCH_URL_PUBLIC);
+var APP_LAUNCH_URL_PRIVATE = modManager.getPropertyValue(APP_LAUNCH_URL_PRIVATE);
 
 
 /**
@@ -62,13 +64,29 @@ var addApplication = function (applicationName, versionName, applicationDescript
                                conSpecCpu, artifactUrl, appCreationMethod, oldHashId, applicationContext, setDefaultVersion,
                                imageId, exposureLevel, sourceLocation) {
 
-    log.info("Started creating App => Name:" + applicationName + " Version:" + versionName + " Description:" + applicationDescription +
-    " RuntimeId:" + runtimeId + " AppType:" + appTypeName + " Runtime Properties:" + stringify(runtimePropertiesArray) +
-    " Tags:" + stringify(tagArray) + " Uploaded FileName:" + uploadedFileName + " New Version:" + isNewVersion +
-    " Allocated Memory:" + conSpecMemory + " Allocated CPU:" + conSpecCpu + " Artifact Url:" + artifactUrl +
-    " App Creation Method:" + appCreationMethod + " Previous HashId:" + oldHashId + " Context:" + applicationContext +
-    " DefaultVersion:" + setDefaultVersion + " Docker Image Id: " + imageId +
-    " DefaultVersion:" + setDefaultVersion + " Exposure Level:" + exposureLevel + " Source Location:" + sourceLocation);
+    log.info("addApplication : " + stringify({
+        applicationName : applicationName,
+        versionName : versionName,
+        applicationDescription : applicationDescription,
+        replicas : replicas,
+        runtimeId : runtimeId,
+        appTypeName : appTypeName,
+        runtimePropertiesArray : runtimePropertiesArray,
+        tagArray : tagArray,
+        appIcon : appIcon,
+        uploadedFileName : uploadedFileName,
+        isNewVersion : isNewVersion,
+        conSpecMemory : conSpecMemory,
+        conSpecCpu : conSpecCpu,
+        artifactUrl : artifactUrl,
+        appCreationMethod : appCreationMethod,
+        oldHashId : oldHashId,
+        applicationContext : applicationContext,
+        setDefaultVersion : setDefaultVersion,
+        imageId : imageId,
+        exposureLevel : exposureLevel,
+        sourceLocation : sourceLocation
+    }));
 
     var tenantId = modManager.getTenantId();
     var applicationHashId = Util.getApplicationHashId(applicationName, tenantId);
@@ -77,7 +95,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
         uploadedFileName = versionHashId + "." + artifactUrl.substring(artifactUrl.lastIndexOf(".") + 1);
     }
 
-    if (sourceLocation == 'true' || sourceLocation == true || appTypeName == "ballerina-composer") {
+    if (sourceLocation || appTypeName == BALLERINA_COMPOSER) {
         sourceLocation = KubernetesProvisioningUtils.getKubernetesValidAppName(applicationName);
     }
 
@@ -86,6 +104,11 @@ var addApplication = function (applicationName, versionName, applicationDescript
     } else {
         createAppInDataBase(applicationName, versionName, applicationDescription, replicas, runtimeId, appTypeName,
                 runtimePropertiesArray, tagArray, appIcon, applicationHashId, versionHashId, conSpecMemory, conSpecCpu, exposureLevel, sourceLocation);
+    }
+
+    if (sourceLocation && (appCreationMethod == START_FROM_SCRATCH)) {
+        // invoke mgtapp and create source location
+        jagg.module("mgtapp").createSourceLocation(versionHashId, BALLERINA, sourceLocation, modManager.getPropertyValue(BALLERINA_COMPOSER_SAMPLE));
     }
 
     var applicationRuntime = ApplicationManager.getRuntimeById(runtimeId);
@@ -108,7 +131,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
     }
     var imageName;
     var readyToTriggerDeployment = true;
-    if (appTypeName != CUSTOM && appTypeName != "ballerina-composer") { //for custom images uploadedFIleName=null
+    if (appTypeName != CUSTOM && appTypeName != BALLERINA_COMPOSER) { //for custom images uploadedFIleName=null
         var absFileUploadedPath = createDockerFile(applicationName, versionName, appTypeName, runtimeId, uploadedFileName,
                 versionHashId, dockerClient, artifactUrl, hostName, appCreationMethod,
                 runtimeProperties, conSpecMemory);
@@ -121,7 +144,7 @@ var addApplication = function (applicationName, versionName, applicationDescript
 
         }
     } else { // for custom docker images
-        if (appTypeName == "ballerina-composer") {
+        if (appTypeName == BALLERINA_COMPOSER) {
             imageName = modManager.getPropertyValue(BALLERINA_COMPOSER_BASE_IMAGE);
             tagName = modManager.getPropertyValue(BALLERINA_COMPOSER_BASE_IMAGE_TAG);
             log.info("image name : " + imageName + " tag name : " + tagName);
@@ -135,11 +158,11 @@ var addApplication = function (applicationName, versionName, applicationDescript
     if(readyToTriggerDeployment) {
         triggerKubernetesDeployment(imageName, runtimeProperties, applicationRuntime, tagName, applicationName,
                                 versionName, appTypeName, runtimeId, replicas, versionHashId, conSpecMemory, conSpecCpu, exposureLevel, sourceLocation);
-        if (appTypeName != "ballerina-composer") {
+        if (appTypeName != BALLERINA_COMPOSER) {
             putSelectedRevisionToSession(applicationHashId, versionName);
         }
     }
-    if (appTypeName != "ballerina-composer") {
+    if (appTypeName != BALLERINA_COMPOSER) {
         if (isNewVersion == 'true') {
             var isSet = parse(setDefaultVersion);
             if (isSet) {
@@ -157,6 +180,23 @@ var addApplication = function (applicationName, versionName, applicationDescript
 var updateDeployment = function (appType, applicationName, versionName, runtimeId,
                                                 runtimePropertiesArray, conSpecMemory, replicas, conSpecCpu,
                                                 sourceLocation, applicationHashId, versionHashId, appCreationMethod, sourcePath) {
+
+    log.info("updateDeployment : " + stringify({
+        appType : appType,
+        applicationName : applicationName,
+        versionName : versionName,
+        runtimeId : runtimeId,
+        runtimePropertiesArray : runtimePropertiesArray,
+        conSpecMemory : conSpecMemory,
+        replicas : replicas,
+        conSpecCpu : conSpecCpu,
+        sourceLocation : sourceLocation,
+        applicationHashId : applicationHashId,
+        versionHashId : versionHashId,
+        appCreationMethod : appCreationMethod,
+        sourcePath : sourcePath
+    }));
+
     log.info("Triggering docker image creation for new artifact.");
     //Build image with new artifact
     var DockerClient = Packages.org.wso2.appcloud.core.docker.DockerClient;
@@ -175,7 +215,7 @@ var updateDeployment = function (appType, applicationName, versionName, runtimeI
     var uploadedFileName = versionHashId + "." + appTypeExtension;
     var imageName;
     var readyToTriggerDeployment = true;
-    if (appType != CUSTOM && appType != "ballerina-composer") { //for custom images uploadedFileName=null
+    if (appType != CUSTOM && appType != BALLERINA_COMPOSER) { //for custom images uploadedFileName=null
 
         var absFileUploadedPath = createDockerFile(applicationName, versionName, appType, runtimeId,
                 uploadedFileName, versionHashId, dockerClient, artifactUrl, hostName, appCreationMethod,
@@ -698,10 +738,10 @@ var constructAppLaunchURL = function(applicationName, versionName){
 
     if(exposureLevel == "private"){
         appLaunchURL = urlPrefix.replace(/\./g, '-')
-                                   +  "." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Private");
+                                   +  "." + APP_LAUNCH_URL_PRIVATE;
     } else {
         appLaunchURL = urlPrefix.replace(/\./g, '-')
-                               +  "." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public");
+                               +  "." + APP_LAUNCH_URL_PUBLIC;
     }
 
     if (log.isDebugEnabled()) {
@@ -870,8 +910,8 @@ var buildDeploymentConfigFromDB = function(versionHashId, applicationName, versi
             var deploymentProxy = proxyIterator.next();
             var provisioningProxy = new Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
             provisioningProxy.setServiceName(deploymentProxy.getServiceName());
-            if (appTypeName == "ballerina-composer") {
-                provisioningProxy.setAppHostURL(versionHashId + "." + deploymentProxy.getServiceNamePrefix() + "." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public") );
+            if (appTypeName == BALLERINA_COMPOSER) {
+                provisioningProxy.setAppHostURL(versionHashId + "." + deploymentProxy.getServiceNamePrefix() + "." + APP_LAUNCH_URL_PUBLIC);
             } else {
                 provisioningProxy.setAppHostURL(hostURL);
             }
@@ -896,17 +936,14 @@ var buildDeploymentConfigFromDB = function(versionHashId, applicationName, versi
 
 function buildVolumeMounts(appTypeName, sourceLocation) {
     var volumnMounts = new java.util.ArrayList();
-    if (appTypeName == "ballerina-composer") {
-
-        // invoke mgtapp and create source location
-        jagg.module("mgtapp").createSourceLocation("ballerina", sourceLocation, modManager.getPropertyValue("ballerina-composer_sample"));
+    if (appTypeName == BALLERINA_COMPOSER) {
 
         var volumnMount = new Packages.org.wso2.appcloud.provisioning.runtime.beans.VolumeMountInfo();
-        volumnMount.setMountPath(modManager.getPropertyValue("ballerina-composer_source_path") + "/source");
-        volumnMount.setName("nfs");
+        volumnMount.setMountPath(modManager.getPropertyValue(BALLERINA_SOURCE_PATH) + "/source");
+        volumnMount.setName(VOLUME_MOUNT_NFS);
         volumnMount.setSubPath(sourceLocation);
-        volumnMount.setNfsPath(modManager.getPropertyValue("nfs_path") + "/" + modManager.getTenantDomain() + "/ballerina/" + sourceLocation);
-        volumnMount.setNfsServer(modManager.getPropertyValue("nfs_server"));
+        volumnMount.setNfsPath(modManager.getPropertyValue(VOLUME_MOUNT_NFS_PATH) + "/" + modManager.getTenantDomain() + "/" + BALLERINA + "/" + sourceLocation);
+        volumnMount.setNfsServer(modManager.getPropertyValue(VOLUME_MOUNT_NFS_SERVER));
         volumnMount.setReadOnly(false);
 
         volumnMounts.add(volumnMount);
@@ -917,13 +954,15 @@ function buildVolumeMounts(appTypeName, sourceLocation) {
 
 function buildEnvironmentVariable(appTypeName, envs, versionHashId) {
 
-    if (appTypeName == "ballerina-composer") {
+    if (appTypeName == BALLERINA_COMPOSER) {
 
-        envs.put("API_PATH_URL", versionHashId + ".bcb." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public"));
-        envs.put("LAUNCHER_PATH_URL", versionHashId + ".bcw." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public"));
-        envs.put("DEBUGGER_PATH_URL", versionHashId + ".bcd." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public"));
-        envs.put("ROOT_DIR_PATH", modManager.getPropertyValue("ballerina-composer_source_path"));
-        envs.put("TRY_SERVICE_URL", "http://" + versionHashId + ".htp." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public"));
+        envs.put("API_PATH_URL", versionHashId + ".bcb." + APP_LAUNCH_URL_PUBLIC);
+        envs.put("LAUNCHER_PATH_URL", versionHashId + ".bcw." + APP_LAUNCH_URL_PUBLIC);
+        envs.put("DEBUGGER_PATH_URL", versionHashId + ".bcd." + APP_LAUNCH_URL_PUBLIC);
+        envs.put("ROOT_DIR_PATH", modManager.getPropertyValue(BALLERINA_SOURCE_PATH));
+        envs.put("TRY_SERVICE_URL", "http://" + versionHashId + ".htp." + APP_LAUNCH_URL_PUBLIC);
+        envs.put("LANG_SERVER", versionHashId + ".bls." + APP_LAUNCH_URL_PUBLIC);
+
     }
 
 }
@@ -944,28 +983,19 @@ function getContainers(imageName, tag, versionHashId, appServiceName, runtimePro
     var serviceProxyList = new java.util.ArrayList();
     var services = ApplicationManager.getTransportsForRuntime(runtimeId);
 
-    if (appTypeName == "ballerina-composer") {
-        for (var i = 0; i < services.length; i++) {
-            var serviceProxy = new Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
-            var service = services[i];
-            serviceProxy.setServiceName(service.getServiceNamePrefix() + "-" + appServiceName);
-            serviceProxy.setAppHostURL(versionHashId + "." + service.getServiceNamePrefix() + "." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public") );
-            serviceProxy.setServiceProtocol(service.getServiceProtocol());
-            serviceProxy.setServicePort(getIngressPort(service.getServiceName()));
-            serviceProxy.setServiceBackendPort(service.getServicePort());
-            serviceProxyList.add(serviceProxy);
-        }
-    } else {
-        for (var i = 0; i < services.length; i++) {
-            var serviceProxy = new Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
-            var service = services[i];
-            serviceProxy.setServiceName(service.getServiceNamePrefix() + "-" + appServiceName);
+    for (var i = 0; i < services.length; i++) {
+        var serviceProxy = new Packages.org.wso2.appcloud.provisioning.runtime.beans.ServiceProxy();
+        var service = services[i];
+        serviceProxy.setServiceName(service.getServiceNamePrefix() + "-" + appServiceName);
+        if (appTypeName == BALLERINA_COMPOSER) {
+            serviceProxy.setAppHostURL(versionHashId + "." + service.getServiceNamePrefix() + "." + APP_LAUNCH_URL_PUBLIC);
+        } else {
             serviceProxy.setAppHostURL(appHostURL);
-            serviceProxy.setServiceProtocol(service.getServiceProtocol());
-            serviceProxy.setServicePort(getIngressPort(service.getServiceName()));
-            serviceProxy.setServiceBackendPort(service.getServicePort());
-            serviceProxyList.add(serviceProxy);
         }
+        serviceProxy.setServiceProtocol(service.getServiceProtocol());
+        serviceProxy.setServicePort(getIngressPort(service.getServiceName()));
+        serviceProxy.setServiceBackendPort(service.getServicePort());
+        serviceProxyList.add(serviceProxy);
     }
     container.setServiceProxies(serviceProxyList);
 
@@ -1430,7 +1460,7 @@ var getVersionListOfApplication = function(applicationHashId){
     try {
         var revisions = ApplicationManager.getVersionListOfApplication(applicationHashId);
         for (var i = 0; i < revisions.size(); i++) {
-            if (revisions.get(i).name != "ballerina-composer") {
+            if (revisions.get(i).name != BALLERINA_COMPOSER) {
                 revisionArray.push(revisions.get(i));
             }
         }
@@ -1761,7 +1791,7 @@ var getRunningApplicationVersionCount = function(){
                         var app = applicationList.get(i);
                         if (app != null) {
                             var versionName = app.getDefaultVersion();
-                            if (versionName != "ballerina-composer") {
+                            if (versionName != BALLERINA_COMPOSER) {
                                 runningCount++;
                             }
                         } else {
@@ -1929,10 +1959,10 @@ var constructDefaultAppLaunchURL = function (applicationName, versionName) {
 
     if(exposureLevel == "private"){
         appLaunchURL = urlPrefix.replace(/\./g, '-')
-                + "." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Private");
+                + "." + APP_LAUNCH_URL_PRIVATE;
     } else {
         appLaunchURL = urlPrefix.replace(/\./g, '-')
-                + "." + modManager.getPropertyValue("ApplicationLaunchBaseURL.Public");
+                + "." + APP_LAUNCH_URL_PUBLIC;
     }
     if (log.isDebugEnabled()) {
         log.debug("Default Application Launch URL: " + appLaunchURL);
@@ -2084,7 +2114,7 @@ var isVersionExist = function(applicationName, versionName) {
  * @returns {Array}
  */
 var getCustomDomainDetailsForTenant = function() {
-    var applicationLaunchBaseURL = modManager.getPropertyValue("ApplicationLaunchBaseURL.Public");
+    var applicationLaunchBaseURL = APP_LAUNCH_URL_PUBLIC;
     var applicationDetailsList = ApplicationManager.getCustomDomainDetailsForTenant();
     var urlPrefix = modManager.getTenantDomain(true) + "-";
     var customDomainDetails = [];

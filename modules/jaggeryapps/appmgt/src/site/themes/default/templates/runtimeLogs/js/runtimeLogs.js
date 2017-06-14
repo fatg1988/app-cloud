@@ -75,7 +75,7 @@ $(document).ready(function () {
         setLogArea(selectedRevisionLogMap[selectedReplica], true);
     });
 
-    $('#log-download').off('click').on('click', downloadLogs);
+    $('#log-download').on('click', downloadLogs);
 });
 
 function regenerateReplicasList(selectedRevisionReplicaList) {
@@ -199,7 +199,6 @@ function initData(selectedRevision, isFirstRequest){
 }
 
 function downloadLogs(e) {
-    $('#log-download').off('click');
     var modalBody = '<div class="container-fluid">'+
                         '<div class="row">'+
                             '<div id="progress_table" class="col-xs-12 col-md-12 section-title">' +
@@ -245,6 +244,8 @@ function downloadLogs(e) {
         $('#revision').prop("disabled", false);
         jagg.message({content: "An error occurred while downloading the logs.", type: 'error', id:'view_log'});
     });
+    $("#log-download").removeClass("btn-action btn disabled").addClass("btn-action");
+
 }
 
 function saveTextAsFile(textToWrite) {

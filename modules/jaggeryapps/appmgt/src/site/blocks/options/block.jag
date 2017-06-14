@@ -28,10 +28,21 @@ jagg.block("options", {
 
     },
     getOutputs: function (inputs) {
+        var appTypeName = request.getParameter("appTypeName");
         var manager = jagg.module("manager");
+        var throttlingModule = jagg.module("throttling");
+        var applicationModule = jagg.module("application");
+        var runtimes = applicationModule.getAllRuntimes(appTypeName);
+        // For a particular appType there is at least one runtime. Here the first runtime is taken
+        var allowedContainerSpecs = applicationModule.getAllowedContainerSpecificationsForRuntime(runtimes[0].id);
+        var isThrottled = throttlingModule.getThrottledStatus(allowedContainerSpecs);
         var cloudSpecificApplicationRepresentation = manager.getCloudTypeProperties().cloudSpecificApplicationRepresentation;
+        var cloudMgtURL = manager.getPropertyValue(CLOUD_MGT_URL);
+
         return {
-            "cloudSpecificApplicationRepresentation" : cloudSpecificApplicationRepresentation
+            "cloudSpecificApplicationRepresentation": cloudSpecificApplicationRepresentation,
+            "isThrottled": isThrottled,
+            "cloudMgtURL" : cloudMgtURL
         };
     }
 });

@@ -82,7 +82,7 @@ $(document).ready(function() {
         var parsedResult = JSON.parse(result);
         if(parsedResult.length == 0){
             $(".env-list").prepend(
-                '<div class="row"><div id="push"></div><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">No environment variables are created yet. </div></div>');
+                '<div class="row"><div id="push"></div><div id="envVariableTag" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">No environment variables are created yet. </div></div>');
         } else {
             for (var i = 0; i < parsedResult.length; i++) {
                 var valueControl;
@@ -160,6 +160,7 @@ $(document).ready(function() {
                     $(this).addClass("edit-disable");
                 }
             });
+            $("#envVariableTag").css("display","none");
         });
 
         $(document).on('click', '.fw-edit', function() {
@@ -192,6 +193,7 @@ $(document).ready(function() {
                 var keyElem = $(this).parent().parent().parent().find('.element-key-holder')[0];
                 var valueElem = $(this).parent().parent().parent().find('.element-value-holder')[0];
                 keyElem.readOnly = false;
+                valueElem.readOnly = false;
                 prevKey = keyElem.value;
                 prevValue = valueElem.value;
                 var data = [];
@@ -208,6 +210,18 @@ $(document).ready(function() {
                 $(valueElem).prop('disabled', false);
                 var select2 = initSelect2(data, valueElem, "", allDBInfo);
                 select2.val(prevValue).trigger("change");
+
+                 //Enable Other environment variables "Edit" button
+                var parentElement = $(this).parent().filter('.edit-env')[0];
+                $('.edit-env').each(function() {
+                    var currentElement = $(this).get(0);
+                    if (currentElement !== parentElement) {
+                        if ($(this).hasClass('edit-disable')) {
+                            $(this).removeClass('edit-disable');
+                        }
+                        $(this).addClass('edit-enable');
+                    }
+                });
             }
         });
 
