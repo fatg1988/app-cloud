@@ -174,10 +174,10 @@ var getLastModifiedFile = function (sourceLocation) {
         log.info("calling getLastModifiedFile : " + i);
     }
 
-    if (result == '') {
+    if (result == null || result.data == null || result.data == '') {
         return null;
     }
 
-    return result;
+    return result.data;
 };
 %>

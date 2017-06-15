@@ -179,18 +179,17 @@ public class ManagementService {
             for (File tmpFile : files) {
                 String content = FileUtils.readFileToString(tmpFile);
                 if (content.contains("main(")) {
-                    // main found
+                    log.info("main() found : " + tmpFile.getCanonicalPath());
                     continue;
                 }
 
                 if (content.contains("package")) {
-                    // package found
+                    log.info("package found : " + tmpFile.getCanonicalPath());
                     continue;
                 }
 
                 if (content.contains("service")) {
-                    // service found
-                    log.info("File : " + tmpFile.getCanonicalPath().substring(startingLocation.length()));
+                    log.info("service found : " + tmpFile.getCanonicalPath());
                     fileList.add(tmpFile.getCanonicalPath().substring(startingLocation.length()));
                 }
 
