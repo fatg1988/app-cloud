@@ -1,0 +1,8 @@
+How to build and push the health check monitor application
+
+zip  healthCheckMonitor.zip *.php
+
+docker build -t us.gcr.io/wso2-cloud-production/ic-db-health-check:0.1 .
+
+docker push us.gcr.io/wso2-cloud-production/ic-db-health-check:0.1
+

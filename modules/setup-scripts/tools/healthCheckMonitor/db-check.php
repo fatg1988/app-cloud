@@ -16,10 +16,10 @@
 */
 
 //Database health check
-$servername = getenv('servername');
-$username = getenv('username');
-$password = getenv('password');
-$dbname = getenv('dbname');
+$servername = getenv('DB_HOSTNAME');
+$username = getenv('DB_USERNAME');
+$password = getenv('DB_PASSWORD');
+$dbname = getenv('DB_NAME');
 
 $time_start = microtime();
 
@@ -31,7 +31,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM company";
+$sql = "SELECT * FROM I_CLOUD_LAUNCH_URLS";
 $result = $conn->query($sql);
 
 $time_end = microtime();
@@ -45,9 +45,9 @@ if ($result->num_rows > 0) {
     // output data of each row
     while($row = $result->fetch_assoc()) {
         $array = array(
-	        "id" => $row["id"],
-	        "name" => $row["name"],
-	        "address" => $row["address"] . $row["city"],
+	        "id" => $row["ID"],
+	        "launch_url" => $row["LAUNCH_URL"],
+	        "description" => $row["DESCRIPTION"],
 	        "time" => $timeInterval . 'ms'
 		);
 		// convert the above array to json string using json_encode()
