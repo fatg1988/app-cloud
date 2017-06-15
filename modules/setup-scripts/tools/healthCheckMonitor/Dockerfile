@@ -18,7 +18,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM wso2-appcloud/php:1.0.0-base
+FROM docker.wso2.com/wso2-cloud/php:7.0.4-debian8-apache2.4.10
 
 ENV PHP_APP_ZIP healthCheckMonitor.zip
 ENV UPLOAD_PATH /tmp/src
