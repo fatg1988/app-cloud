@@ -39,7 +39,7 @@ import (
 	"k8s.io/kubernetes/pkg/controller/framework"
 	"k8s.io/kubernetes/pkg/fields"
 	kubectl_util "k8s.io/kubernetes/pkg/kubectl/cmd/util"
-	"k8s.io/kubernetes/pkg/util/flowcontrol"
+	"k8s.io/kubernetes/pkg/util"
 	"k8s.io/kubernetes/pkg/util/intstr"
 	"k8s.io/kubernetes/pkg/util/wait"
 	"k8s.io/kubernetes/pkg/util/workqueue"
@@ -242,19 +242,19 @@ func (s serviceByName) Less(i, j int) bool {
 // loadBalancerConfig represents loadbalancer specific configuration. Eventually
 // kubernetes will have an api for l7 loadbalancing.
 type loadBalancerConfig struct {
-	Name                     string `json:"name" description:"Name of the load balancer, eg: haproxy."`
-	ReloadCmd                string `json:"reloadCmd" description:"command used to reload the load balancer."`
-	Config                   string `json:"config" description:"path to loadbalancers configuration file."`
-	Template                 string `json:"template" description:"template for the load balancer config."`
-	Algorithm                string `json:"algorithm" description:"loadbalancing algorithm."`
-	startSyslog              bool   `description:"indicates if the load balancer uses syslog."`
-	sslCert                  string `json:"sslCert" description:"PEM for ssl."`
-	sslCaCert                string `json:"sslCaCert" description:"PEM to verify client's certificate."`
-	lbDefAlgorithm           string `description:"custom default load balancer algorithm".`
-	lbType                   string `json:"lbType" description:"Type of the load balancer public/private"`
-	CertificatesDir          string `json:"certificatesDir" description:"directory path of where all PEM files for custom domains will be added"`
-	serverUrl                string `description:"The server URL to access governance"`
-	encodedKey               string `description:"The private key used for encryption"`
+	Name            string `json:"name" description:"Name of the load balancer, eg: haproxy."`
+	ReloadCmd       string `json:"reloadCmd" description:"command used to reload the load balancer."`
+	Config          string `json:"config" description:"path to loadbalancers configuration file."`
+	Template        string `json:"template" description:"template for the load balancer config."`
+	Algorithm       string `json:"algorithm" description:"loadbalancing algorithm."`
+	startSyslog     bool   `description:"indicates if the load balancer uses syslog."`
+	sslCert         string `json:"sslCert" description:"PEM for ssl."`
+	sslCaCert       string `json:"sslCaCert" description:"PEM to verify client's certificate."`
+	lbDefAlgorithm  string `description:"custom default load balancer algorithm".`
+	lbType          string `json:"lbType" description:"Type of the load balancer public/private"`
+	CertificatesDir string `json:"certificatesDir" description:"directory path of where all PEM files for custom domains will be added"`
+	serverUrl       string `description:"The server URL to access governance"`
+	encodedKey      string `description:"The private key used for encryption"`
 }
 
 type staticPageHandler struct {
@@ -420,7 +420,7 @@ type loadBalancerController struct {
 	svcController     *framework.Controller
 	svcLister         cache.StoreToServiceLister
 	epLister          cache.StoreToEndpointsLister
-	reloadRateLimiter flowcontrol.RateLimiter
+	reloadRateLimiter util.RateLimiter
 	template          string
 	targetService     string
 	forwardServices   bool
@@ -588,12 +588,12 @@ func (lbc *loadBalancerController) getServices() (httpSvc []service, httpsTermSv
 							resourceErrorFilePath := lbc.cfg.CertificatesDir + *appTenantDomain +
 								hypenSeparator + appName + hypenSeparator +
 								errorFileName + pemFileExtension
-							_, pemFileErr := os.Stat(resourceFilePath);
-							_, errorFileErr := os.Stat(resourceErrorFilePath);
-							if  os.IsNotExist(pemFileErr) && os.IsNotExist(errorFileErr) {
+							_, pemFileErr := os.Stat(resourceFilePath)
+							_, errorFileErr := os.Stat(resourceErrorFilePath)
+							if os.IsNotExist(pemFileErr) && os.IsNotExist(errorFileErr) {
 								resourcePath := lbc.cfg.serverUrl + registryPath +
-								cloudType + *appTenantDomain + securityCertificates +
-								appName + forwardSlashSeparator
+									cloudType + *appTenantDomain + securityCertificates +
+									appName + forwardSlashSeparator
 								addSecurityCertificate(resourcePath, appName,
 									lbc.cfg.CertificatesDir, lbc.cfg.encodedKey)
 							}
@@ -633,6 +633,9 @@ func (lbc *loadBalancerController) getServices() (httpSvc []service, httpsTermSv
 
 // sync all services with the loadbalancer.
 func (lbc *loadBalancerController) sync(dryRun bool) error {
+
+	time.Sleep(10000 * time.Millisecond)
+
 	if !lbc.epController.HasSynced() || !lbc.svcController.HasSynced() {
 		time.Sleep(100 * time.Millisecond)
 		return errDeferredSync
@@ -652,6 +655,25 @@ func (lbc *loadBalancerController) sync(dryRun bool) error {
 	if dryRun {
 		return nil
 	}
+
+	if reflect.DeepEqual(httpSvc, httpSvcOld) && reflect.DeepEqual(httpsTermSvc, httpsTermSvcOld) {
+		return nil
+	}
+
+	httpSvcTmp := make([]service, len(httpSvc))
+	httpsTermSvcTmp := make([]service, len(httpsTermSvc))
+	tcpSvcTmp := make([]service, len(tcpSvc))
+
+	httpSvcOld = httpSvcTmp
+	httpsTermSvcOld = httpsTermSvcTmp
+	tcpSvcOld = tcpSvcTmp
+
+	copy(httpSvcOld, httpSvc)
+	copy(httpsTermSvcOld, httpsTermSvc)
+	copy(tcpSvcOld, tcpSvc)
+
+	glog.Infof("Reloading service load balancer")
+
 	return lbc.cfg.reload()
 }
 
@@ -674,7 +696,7 @@ func newLoadBalancerController(cfg *loadBalancerConfig, kubeClient *unversioned.
 		cfg:    cfg,
 		client: kubeClient,
 		queue:  workqueue.New(),
-		reloadRateLimiter: flowcontrol.NewTokenBucketRateLimiter(
+		reloadRateLimiter: util.NewTokenBucketRateLimiter(
 			reloadQPS, int(reloadQPS)),
 		targetService:   *targetService,
 		forwardServices: *forwardServices,
@@ -794,6 +816,10 @@ func dryRun(lbc *loadBalancerController) {
 		glog.Infof("ERROR: %+v", err)
 	}
 }
+
+var httpSvcOld []service
+var httpsTermSvcOld []service
+var tcpSvcOld []service
 
 func main() {
 	clientConfig := kubectl_util.DefaultClientConfig(flags)
