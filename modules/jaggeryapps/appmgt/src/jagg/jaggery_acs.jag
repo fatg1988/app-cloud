@@ -119,8 +119,8 @@
             samlResponse = samlResponse.replace('<?xml version="1.0" encoding="UTF-8"?>', "");
 
             var modManager = jagg.module("manager");
-            //Fix for session fization issue - WSOTWOCLOUD-769
-            jagg.setNewUserSession(fullUsername);
+            //Set user as logged in
+            jagg.setUser(fullUsername);
             //Set the new session id
             sessionId = session.getId();
             ssoRelyingParty.setSessionAuthenticated(sessionId, samlResponse);
