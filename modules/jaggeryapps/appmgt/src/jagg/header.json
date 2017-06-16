@@ -61,7 +61,7 @@
         "dropDown": "false"
       },
       "Logout": {
-        "url": "https://cloudmgt.cloudlocal.wso2.com:9444/cloudmgt/site/pages/logout.jag",
+        "url": "https://integration.cloudlocal.wso2.com:9453/appmgt/site/pages/logout.jag",
         "icon": "fa fa-sign-out",
         "target": "_self",
         "dropDown": "false"
