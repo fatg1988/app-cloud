@@ -180,29 +180,36 @@ function pollEvents() {
                 var event = result[i];
                 if (event.name === "Status" && event.status === "success") {
                     clearInterval(pollEventsOfToolKey);
-                    setTimeout(loadEditor, 4250);
-                    function loadEditor(){
-                        deleteAppCreationEvents(BALLERINA_COMPOSER);
 
-                        jagg.post("../blocks/application/application.jag", {
-                            action:"getVersionHashId",
-                            applicationName:applicationName,
-                            applicationRevision:BALLERINA_COMPOSER
-                        },function (result) {
-                            if (result != null) {
-                                toolVersionHashId = result;
+                    jagg.post("../blocks/application/application.jag", {
+                        action:"getVersionHashId",
+                        applicationName:applicationName,
+                        applicationRevision:BALLERINA_COMPOSER
+                    },function (result) {
+                        if (result != null) {
+                            toolVersionHashId = result;
+                            var timerId;
+                            timerId = setInterval(function () {
+                                jagg.post("../blocks/application/application.jag", {
+                                    action: "loadEndpoints",
+                                    appType: BALLERINA_COMPOSER,
+                                    deploymentURL: constructEditorURL(),
+                                    versionId: BALLERINA_COMPOSER
+                                }, function(result) {
+                                    var isAccessible =  JSON.parse(result) != undefined;
+                                    if (isAccessible) {
+                                        clearInterval(timerId);
+                                        deleteAppCreationEvents(BALLERINA_COMPOSER);
+                                        loadEditorToTheBrowser();
+                                    }
+                                }, function(jqXHR, data, errorThrown) {
 
-                                setTimeout(function(){
-                                    console.log("Waiting until haproxy reloads");
-                                }, 8000);
+                                });
+                            }, 5000);
+                        }
+                    }, function (jqXHR, textStatus, errorThrown) {
 
-                                loadEditorToTheBrowser();
-                            }
-                        }, function (jqXHR, textStatus, errorThrown) {
-
-                        });
-
-                    }
+                    });
                 } else if(event.status == "failed") {
                     //When redeploying an application the associated pod is deleted and an event with the name
                     //"Stopping Containers" is persisted in the database. Due to the pod not getting deleted within the

@@ -54,6 +54,7 @@ var JaggeryAppTypeUtil = function () {};
 var DSSAppTypeUtil = function () {};
 var CustomAppTypeUtil = function () {};
 var NodeJSAppTypeUtil = function () {};
+var BComposerAppTypeUtil = function () {};
 
 // extend the AppTypeUtil interface
 WarAppTypeUtil.prototype = Object.create(AppTypeUtil);
@@ -64,6 +65,7 @@ JaggeryAppTypeUtil.prototype = Object.create(AppTypeUtil);
 DSSAppTypeUtil.prototype = Object.create(AppTypeUtil);
 CustomAppTypeUtil.prototype = Object.create(AppTypeUtil);
 NodeJSAppTypeUtil.prototype = Object.create(AppTypeUtil);
+BComposerAppTypeUtil.prototype = Object.create(AppTypeUtil);
 
 // actual implementation goes here
 WarAppTypeUtil.prototype.getEndpoints = function (deploymentUrl, versionId) {
@@ -94,6 +96,16 @@ MSSAppTypeUtil.prototype.getEndpoints = function (deploymentUrl, versionId) {
     return endpoints;
 };
 
+BComposerAppTypeUtil.prototype.getEndpoints = function (deploymentUrl, versionId) {
+    var url = deploymentUrl + "config";
+    var endpoints = null;
+    try {
+        endpoints = get(url, {}, "json");
+    } catch(e) {
+        return null;
+    }
+    return endpoints;
+};
 
 
 ESBAppTypeUtil.prototype.getEndpoints = function (deploymentUrl, versionId) {
