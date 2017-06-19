@@ -27,7 +27,7 @@ var modManager = jagg.module("manager");
 var log = new Log();
 (function(){
     if(action == "uploadExistingArchive"){
-        var uploadedArtifact = request.getFile(FILE_UPLOAD);
+        var uploadedArtifact = FILE_UPLOAD;
         var applicationName = request.getParameter("applicationName");
         var appTypeName = request.getParameter("appTypeName");
         var applicationRevision = request.getParameter("applicationRevision");
@@ -56,6 +56,7 @@ var log = new Log();
         var logMessage = '';
         var applicationDescription = request.getParameter("applicationDescription");
         var appCreationMethod = request.getParameter("appCreationMethod");
+        if (validateRequired("appCreationMethod", appCreationMethod)) {return;}
         var appIcon = request.getFile("appIcon");
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
@@ -130,10 +131,9 @@ var log = new Log();
 
         var uploadedFileName = request.getParameter("uploadedFileName");
 
-        if (appCreationMethod.equals(DEFAULT)) {
-            if (request.getFile(FILE_UPLOAD) != null && request.getFile(FILE_UPLOAD).getName() != null && request
-                    .getFile(FILE_UPLOAD).getName() != 'null'&& request.getFile(FILE_UPLOAD).getName().length > 0) {
-                uploadedFileName = request.getFile(FILE_UPLOAD).getName();
+        if (appCreationMethod == DEFAULT) {
+            if (FILE_UPLOAD != null && FILE_UPLOAD.getName() != null && FILE_UPLOAD.getName() != 'null'&& FILE_UPLOAD.getName().length > 0) {
+                uploadedFileName = FILE_UPLOAD.getName();
             }
         }
         var uploadedArtifacts = request.getAllFiles();
@@ -176,7 +176,6 @@ var log = new Log();
         }
 
         var artifactUrl = request.getParameter("artifactUrl");
-        if (validateRequired("appCreationMethod", appCreationMethod)) {return;}
 
         var oldHashId = request.getParameter("oldHashId");
         var applicationContext = request.getParameter("applicationContext");
