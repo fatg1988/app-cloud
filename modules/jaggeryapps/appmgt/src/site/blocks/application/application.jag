@@ -55,6 +55,8 @@ var log = new Log();
 
         var logMessage = '';
         var applicationDescription = request.getParameter("applicationDescription");
+        var appCreationMethod = request.getParameter("appCreationMethod");
+        var appIcon = request.getFile("appIcon");
         var replicas = 1;
         var runtimeId = request.getParameter("runtime");
         var exposureLevel = "public";
@@ -128,7 +130,12 @@ var log = new Log();
 
         var uploadedFileName = request.getParameter("uploadedFileName");
 
-        var appIcon = request.getFile("appIcon");
+        if (appCreationMethod == "default") {
+            if (request.getFile("fileupload") != null && request.getFile("fileupload").getName() != null && request
+                    .getFile("fileupload").getName() != 'null' && request.getFile("fileupload").getName().length > 0) {
+                uploadedFileName = request.getFile("fileupload").getName();
+            }
+        }
         var uploadedArtifacts = request.getAllFiles();
         var isFileAttached = request.getParameter("isFileAttached");
         if (isFileAttached == 'true') {
@@ -169,7 +176,6 @@ var log = new Log();
         }
 
         var artifactUrl = request.getParameter("artifactUrl");
-        var appCreationMethod = request.getParameter("appCreationMethod");
         if (validateRequired("appCreationMethod", appCreationMethod)) {return;}
 
         var oldHashId = request.getParameter("oldHashId");
