@@ -27,7 +27,7 @@ var modManager = jagg.module("manager");
 var log = new Log();
 (function(){
     if(action == "uploadExistingArchive"){
-        var uploadedArtifact = FILE_UPLOAD;
+        var uploadedArtifact = request.getFile("fileupload");
         var applicationName = request.getParameter("applicationName");
         var appTypeName = request.getParameter("appTypeName");
         var applicationRevision = request.getParameter("applicationRevision");
@@ -54,6 +54,7 @@ var log = new Log();
     } else if (action == "createApplication") {
 
         var logMessage = '';
+        var fileUpload = request.getFile("fileupload");
         var applicationDescription = request.getParameter("applicationDescription");
         var appCreationMethod = request.getParameter("appCreationMethod");
         if (validateRequired("appCreationMethod", appCreationMethod)) {return;}
@@ -132,8 +133,9 @@ var log = new Log();
         var uploadedFileName = request.getParameter("uploadedFileName");
 
         if (appCreationMethod == DEFAULT) {
-            if (FILE_UPLOAD != null && FILE_UPLOAD.getName() != null && FILE_UPLOAD.getName() != 'null'&& FILE_UPLOAD.getName().length > 0) {
-                uploadedFileName = FILE_UPLOAD.getName();
+            if (fileUpload != null && fileUpload.getName() != null && fileUpload.getName() != 'null' &&
+                fileUpload.getName().length > 0) {
+                uploadedFileName = request.getFile("fileupload").getName();
             }
         }
         var uploadedArtifacts = request.getAllFiles();
