@@ -54,7 +54,6 @@ var log = new Log();
     } else if (action == "createApplication") {
 
         var logMessage = '';
-        var fileUpload = request.getFile("fileupload");
         var applicationDescription = request.getParameter("applicationDescription");
         var appCreationMethod = request.getParameter("appCreationMethod");
         if (validateRequired("appCreationMethod", appCreationMethod)) {return;}
@@ -133,9 +132,10 @@ var log = new Log();
         var uploadedFileName = request.getParameter("uploadedFileName");
 
         if (appCreationMethod == DEFAULT) {
+            var fileUpload = request.getFile("fileupload");
             if (fileUpload != null && fileUpload.getName() != null && fileUpload.getName() != 'null' &&
                 fileUpload.getName().length > 0) {
-                uploadedFileName = request.getFile("fileupload").getName();
+                uploadedFileName = fileUpload.getName();
             }
         }
         var uploadedArtifacts = request.getAllFiles();
