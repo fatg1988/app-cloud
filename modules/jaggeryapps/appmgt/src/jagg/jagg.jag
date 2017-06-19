@@ -19,6 +19,8 @@
 include('/jagg/constants.jag');
 var site = require("/site/conf/site.json");
 
+var log = new Log();
+var audit = org.wso2.carbon.CarbonConstants.AUDIT_LOG;
 //TODO : remove this when log configs are implemented
 Log.prototype.isDebugEnabled = function () {
     return false;
@@ -78,6 +80,23 @@ var jagg = jagg || (function () {
 
     var setUser = function (user) {
         session.put("logged.user", user);
+    };
+
+    var setSessionDetailsAndRedirection = function(username) {
+        var modManager = jagg.module("manager");
+        jagg.setSelectedCloud(request.getRequestURL());
+        var permission = modManager.getPropertyValue(jagg.getSelectedCloud() + LOGIN_PERMISSION);
+        var isUserAuthorized = modManager.checkAuthorizationForUser(username, permission);
+        if (isUserAuthorized) {
+            var email = modManager.getEmailAddressForUser(username);
+            modManager.setUserEmailAddress(email);
+            session.put("LOGGED_IN_USER", username);
+            audit.info("User : " + jagg.getUser() + ", Action : login");
+            response.sendRedirect("/appmgt/site/pages/index.jag");
+        } else {
+            session.invalidate();
+            response.sendRedirect("/appmgt/site/pages/error-pages/401.html");
+        }
     };
 
     var getAppTypePropertyConfFilePath = function () {
@@ -613,6 +632,7 @@ return getThemePath() + path;
     return {
         setUser:setUser,
         setNewUserSession:setNewUserSession,
+        setSessionDetailsAndRedirection:setSessionDetailsAndRedirection,
         getUser:getUser,
         block:block,
         module:module,

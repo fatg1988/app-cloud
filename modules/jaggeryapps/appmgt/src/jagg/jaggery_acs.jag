@@ -118,26 +118,13 @@
             }
             samlResponse = samlResponse.replace('<?xml version="1.0" encoding="UTF-8"?>', "");
 
-            var modManager = jagg.module("manager");
             //Set user as logged in
             jagg.setUser(fullUsername);
             //Set the new session id
             sessionId = session.getId();
             ssoRelyingParty.setSessionAuthenticated(sessionId, samlResponse);
             var username = ssoRelyingParty.getLoggedInUser(sessionId);
-            jagg.setSelectedCloud(request.getRequestURL());
-            var permission = modManager.getPropertyValue(jagg.getSelectedCloud() + LOGIN_PERMISSION);
-            var isUserAuthorized = modManager.checkAuthorizationForUser(username, permission);
-            if(isUserAuthorized){
-                var email = modManager.getEmailAddressForUser(username);
-                modManager.setUserEmailAddress(email);
-                session.put("LOGGED_IN_USER", ssoRelyingParty.getLoggedInUser(sessionId));
-                audit.info("User : " + jagg.getUser() + ", Action : login");
-                response.sendRedirect("/appmgt/site/pages/index.jag");
-            } else {
-                session.invalidate();
-                response.sendRedirect("/appmgt/site/pages/error-pages/401.html");
-            }
+            jagg.setSessionDetailsAndRedirection(username);
             return;
         } else {
             // if the saml response is log out request from IDP, we log out from web app.
@@ -152,6 +139,16 @@
     if (samlRequest != null) {
         isLogoutRequest = ssoRelyingParty.isLogoutRequest(samlRequest);
         if (isLogoutRequest) {
+            /*------------------------ handle back channel logout request start --------------------*/
+            if (site.backChannelAuth.enabled) {
+                var backChannelAuthHandler = Packages.org.wso2.carbon.cloud.back.channel.BackChannelAuthHandler;
+                var issuer = site.backChannelAuth.issuer;
+                if (backChannelAuthHandler.canLogout(issuer, samlRequest)) {
+                    log.info("Invalidate back channel authenticated session");
+                    backChannelAuthHandler.invalidateSession(issuer, samlRequest);
+                    return;
+                }
+            }
             ssoRelyingParty.invalidateSessionBySAMLResponse(samlRequest);
             audit.info("User : " + jagg.getUser() + ", Action : logout");
             session.invalidate();
