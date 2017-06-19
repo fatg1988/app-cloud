@@ -54,6 +54,8 @@ var FILE_UPLOAD_TIMEOUT = "File.Upload.Timeout";
 var CUSTOM_URL_SETTINGS_PAGE_URL = "CustomUrlSettingsPage.Url";
 var ADMIN_USERNAME = "Cloud.Admin.Username";
 var ADMIN_PASSWORD = "Cloud.Admin.Password";
+var FILE_UPLOAD = "fileupload";
+var DEFAULT = "default";
 
 //events related constants
 var DATABASE_ADD = "Adding application to database";
