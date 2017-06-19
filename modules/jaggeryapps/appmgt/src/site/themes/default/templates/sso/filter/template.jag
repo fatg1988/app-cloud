@@ -64,8 +64,9 @@ jagg.template("sso/filter", function(inputs, outputs, jagg) { %>
 			if (authInfo) {
 				var username = String(authInfo.getUsername());
 				var sessionIndex = String(authInfo.getSessionIndex());
-				//Fix for session fization issue - WSOTWOCLOUD-769
-				jagg.setNewUserSession(username);
+				//Fix for session fixation issue - WSOTWOCLOUD-769
+				jagg.setNewUserSession();
+				jagg.setUser(username);
 				backChannelAuthHandler.setSession(session, sessionIndex, issuer);
 				session.put("back-channel-auth", "true");
 				log.info("Back channel login successful for user :" + username);
@@ -79,9 +80,7 @@ jagg.template("sso/filter", function(inputs, outputs, jagg) { %>
 			log.error(e);
 		}
 	}
-
 	/*---------------------------------------back channel authentication end ---------------------*/
-
 
 	var security =require("sso");
 	var ssoRelyingParty = new security.SSORelyingParty(jagg.getIssuer(request.getRequestURL()));
