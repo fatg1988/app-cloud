@@ -2,7 +2,6 @@
 var ALPHA_NUMERIC_PLUS_UNDERSCORE_REGEX = "^[A-Za-z0-9_]+$";
 var ALPHA_NUMERIC_PLUS_UNDERSCORE_REGEX_NOT_STARTING_WITH_NUMBER = "^[A-Za-z_][A-Za-z0-9_]+$";
 var VERSION_REGEX = "^[A-Za-z0-9_.-]+$";
-
 //Environment key validation
 function validateEnvKey(envKey){
     var envKeyRegex = new RegExp(ALPHA_NUMERIC_PLUS_UNDERSCORE_REGEX_NOT_STARTING_WITH_NUMBER);
@@ -62,6 +61,33 @@ function validateApplicationVersion(version) {
         validator = {
             status: true,
             msg: "Version validation is successful."
+        }
+    }
+    return validator;
+}
+
+function validateAlphaNumeric(value) {
+
+    var validator;
+    var NonAlphaNumRegex = new RegExp(ALPHA_NUMERIC_PLUS_UNDERSCORE_REGEX);
+    if (value == null || value.trim().length == 0) {
+        validator = {
+            status: false,
+            msg: "Application name cannot be empty'."
+        }
+    } else if (!isNaN(value)) {
+        validator = {
+            status: false,
+            msg: "Non-alphanumeric characters are not allowed for Application Name"
+        }
+    } else if (!NonAlphaNumRegex.test(value)) {
+        validator = {
+            status: false,
+            msg: "Non-alphanumeric characters are not allowed for Application Name"
+        }
+    } else {
+        validator = {
+            status: true,
         }
     }
     return validator;
