@@ -1120,12 +1120,27 @@ var getAllApplications = function(){
             var application = applications[i];
             var applicationObject = {};
 
+            var versions = ApplicationManager.getAllVersionsOfApplication(application.hashId);
+            var versionList = [];
+            var runningVersionCount = 0;
+            for (var j = 0; j < versions.size(); j++) {
+                if (versions.get(j).status == APPLICATION_RUNNING && versions.get(j).versionName != BALLERINA_COMPOSER) {
+                    var versionObj = {};
+                    versionObj.versionName = versions.get(j).versionName;
+                    versionObj.status = versions.get(j).status;
+                    versionList.push(versionObj);
+                    runningVersionCount++;
+                }
+            }
             applicationObject.applicationName = application.applicationName;
             applicationObject.hashId = application.hashId;
             applicationObject.applicationType = application.applicationType;
             applicationObject.icon = getApplicationIconAsBase64String(application);
             applicationObject.appTypeIcon = appTypesProperties[application.applicationType].icon;
             applicationObject.appTypeTitle = appTypesProperties[application.applicationType].displayName;
+            applicationObject.defaultVersion = application.defaultVersion;
+            applicationObject.runningVersionCount = runningVersionCount;
+            applicationObject.versionList = versionList;
             applicationArray.push(applicationObject);
         }
     } catch(e){

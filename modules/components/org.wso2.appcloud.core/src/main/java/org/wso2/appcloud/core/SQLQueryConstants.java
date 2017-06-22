@@ -151,7 +151,7 @@ public class SQLQueryConstants {
     /*Select Queries*/
 
     public static final String GET_ALL_APPLICATIONS_LIST =
-            "SELECT app.name as application_name, app.hash_id as hash_id, type.name as app_type_name, icon.icon as icon " +
+            "SELECT app.name as application_name, app.hash_id as hash_id, app.default_version as default_version, type.name as app_type_name, icon.icon as icon " +
             "FROM AC_APPLICATION app JOIN AC_APP_TYPE type ON app.app_type_id = type.id LEFT OUTER JOIN AC_APP_ICON icon" +
             " ON app.id = icon.application_id WHERE app.tenant_id=? AND app.cloud_id=?";
 
