@@ -936,8 +936,8 @@ jagg.template("application", function (inputs, outputs, jagg) {
     }
 
     function activateUploadButton() {
-        if (validateAlphaNumeric($('#applicationName').val()).status && $('#applicationRevision').val() && $
-        ("#btn-artifact-upload").text().trim() == "Browse") {
+        if (validateAlphaNumeric($('#applicationName').val()).status && $('#applicationRevision').val() &&
+        $ ("#btn-artifact-upload").text().trim() == "Browse") {
             $("#btn-artifact-upload").attr("disabled", false);
         }
         validateArtifactURL($('#artifactUrl').val());

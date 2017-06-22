@@ -70,7 +70,7 @@ function validateApplicationVersion(version) {
 // validate the application name provided by user
 function validateAlphaNumeric(value) {
     var validator;
-    var NonAlphaNumRegex = new RegExp(ALPHA_NUMERIC_PLUS_UNDERSCORE_REGEX);
+    var nonAlphaNumRegex = new RegExp(ALPHA_NUMERIC_PLUS_UNDERSCORE_REGEX);
     if (value == null || value.trim().length == 0) {
         validator = {
             status: false,
@@ -81,14 +81,14 @@ function validateAlphaNumeric(value) {
             status: false,
             msg: "Non-alphanumeric characters are not allowed for Application Name"
         }
-    } else if (!NonAlphaNumRegex.test(value)) {
+    } else if (!nonAlphaNumRegex.test(value)) {
         validator = {
             status: false,
             msg: "Non-alphanumeric characters are not allowed for Application Name"
         }
     } else {
         validator = {
-            status: true,
+            status: true
         }
     }
     return validator;
