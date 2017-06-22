@@ -74,7 +74,7 @@ function validateAlphaNumeric(value) {
     if (value == null || value.trim().length == 0) {
         validator = {
             status: false,
-            msg: "Application name cannot be empty'."
+            msg: "Application name cannot be empty"
         }
     } else if (!isNaN(value)) {
         validator = {
