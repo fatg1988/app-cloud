@@ -39,13 +39,17 @@ jagg.block("home", {
         var application = applicationModule.getApplication(inputs.applicationKey);
         application["appTypeIcon"] = appTypesProperties[application.applicationType].icon;
 
-        var selectedRevision = applicationModule.getSelectedRevisionFromSession(inputs.applicationKey);
+        var selectedRevision = request.getParameter("selectedRevision");
+        if (!selectedRevision) {
+            selectedRevision = applicationModule.getSelectedRevisionFromSession(inputs.applicationKey);
+        }
 
         if(!selectedRevision && application.defaultVersion){
             selectedRevision = application.defaultVersion;
-        } else if (!application.defaultVersion){
-            selectedRevision = Object.keys(application.versions)[0];
+        } else if (!application.defaultVersion) {
+            selectedRevision = Object.keys(application.versions)[application.versions.length];
         }
+
         var restartCounts = applicationModule.getRestartCounts(application.applicationName, selectedRevision, application.applicationType);
         var selectedVersion = application.versions[selectedRevision];
         var conSpecCpu = selectedVersion.conSpecCpu;

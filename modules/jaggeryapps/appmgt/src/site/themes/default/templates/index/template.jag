@@ -128,8 +128,6 @@ jagg.template("index", function(inputs, outputs, jagg) {
                 application.highlightedName = "";
             }
 
-
-            var theLi;
             var appIcon;
             if (application.icon) {
                 imgSrc = "data:image/bmp;base64,"+application.icon;
@@ -144,25 +142,78 @@ jagg.template("index", function(inputs, outputs, jagg) {
                  '</div>';
             }
 
-            theLi  = '<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" id="' + application.applicationName + '">' +
+            var theLi = '';
+            if (application.runningVersionCount > 0) {
+                var versionsList = '';
+                for (var i = 0; i < application.versionList.length; i++) {
+                    if (application.versionList[i].versionName == application.defaultVersion) {
+                        versionsList += '<li class="default"><a href="/appmgt/site/pages/home.jag?applicationKey=' + application.hashId + '&selectedRevision=' + application.versionList[i].versionName + '">' + application.versionList[i].versionName + '</a></li>';
+                    } else {
+                        versionsList += '<li><a href="/appmgt/site/pages/home.jag?applicationKey=' + application.hashId + '&selectedRevision=' + application.versionList[i].versionName + '">' + application.versionList[i].versionName + '</a></li>';
+                    }
+                }
+                var runningVersionsInfo = '<a href="#" class="running-versions dropdown-toggle" data-toggle="dropdown"><span>' + application.runningVersionCount + ' version(s) running</span> <i class="icon fw fw-down"></i></a>' +
+                             '<ul class="dropdown-menu app-extra-menu-versions" role="menu">' +
+                                versionsList +
+                             '</ul>';
 
-                                '<div class="cloud-app-listing app-color-one">'+
-                                        '<a href="/appmgt/site/pages/home.jag?applicationKey=' + application.hashId + '">'+
-                                        '<i class="fw '+application.appTypeIcon+' fw-2x app-type-icon" data-toggle="tooltip" data-placement="right" title="' + application.appTypeTitle + '"></i>' +
-                                         appIcon +
-                                        '<div class="app-name ellipsis">' + displayName + '</div>' +
-                                        '</a>' +
-                                        '<a class="dropdown-toggle app-extra" data-toggle="dropdown">' +
-                                            '<i class="fa fa-ellipsis-v"></i>' +
-                                            '<span class="sr-only">Toggle Dropdown</span>' +
-                                        '</a>' +
-                                        '<ul class="dropdown-menu app-extra-menu" role="menu">' +
-                                            '<li><a onclick="deleteApplicationPopUp(' +  "'" + displayName + "'," +  "'" + application.hashId + "'"  + ')">Delete</a></li>' +
-                                        '</ul>' +
+                theLi  = '<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" id="' + application.applicationName + '">' +
+                            '<div class="cloud-app-listing app-color-one">'+
+                                '<a href="/appmgt/site/pages/home.jag?applicationKey=' + application.hashId + '">'+
+                                    '<i class="fw '+application.appTypeIcon+' fw-2x app-type-icon" data-toggle="tooltip" data-placement="right" title="' + application.appTypeTitle + '"></i>' + appIcon +
+                                '</a>' +
+                                '<div class="app-name">' +
+                                    '<div class="name">' +
+                                        '<div class="ellipsis">' + displayName + '</div>' +
+                                        '<div class="dropdown running-versions-wrapper">' +
+                                            runningVersionsInfo +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="menu">' +
+                                        '<div class="dropdown">' +
+                                            '<a class="dropdown-toggle app-extra" data-toggle="dropdown">' +
+                                                '<i class="fa fa-ellipsis-v"></i>' +
+                                                '<span class="sr-only">Toggle Dropdown</span>' +
+                                            '</a>' +
+                                            '<ul class="dropdown-menu app-extra-menu" role="menu">' +
+                                                '<li><a onclick="deleteApplicationPopUp(' +  "'" + displayName + "'," +  "'" + application.hashId + "'"  + ')">Delete</a></li>' +
+                                            '</ul>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+            } else {
+                theLi  = '<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" id="' + application.applicationName + '">' +
 
+                                '<div class="cloud-app-listing app-color-one app-stopped">'+
+                                         '<a href="/appmgt/site/pages/home.jag?applicationKey=' + application.hashId + '">'+
+                                         '<i class="fw '+application.appTypeIcon+' fw-2x app-type-icon" data-toggle="tooltip" data-placement="right" title="' + application.appTypeTitle + '"></i>' +
+                                            appIcon +
+                                         '</a>' +
+                                         '<div class="app-name">' +
+                                            '<div class="name">' +
+                                                '<div class="ellipsis">' + displayName + '</div>' +
+                                                '<div class="dropdown running-versions-wrapper">' +
+                                                    '<span class="running-versions"> stopped </span>' +
+                                                '</div>' +
+                                            '</div>' +
+                                            '<div class="menu">' +
+                                                '<div class="dropdown">' +
+                                                    '<a class="dropdown-toggle app-extra" data-toggle="dropdown">' +
+                                                        '<i class="fa fa-ellipsis-v"></i>' +
+                                                        '<span class="sr-only">Toggle Dropdown</span>' +
+                                                    '</a>' +
+                                                    '<ul class="dropdown-menu app-extra-menu" role="menu">' +
+                                                        '<li><a onclick="deleteApplicationPopUp(' +  "'" + displayName + "'," +  "'" + application.hashId + "'"  + ')">Delete</a></li>' +
+                                                    '</ul>' +
+                                                '</div>' +
+                                            '</div>' +
+                                         '</div>' +
                                 '</div>' +
 
                         '</div>';
+            }
 
             $("#item_list").append(theLi);
         }

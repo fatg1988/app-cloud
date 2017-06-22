@@ -620,6 +620,7 @@ public class ApplicationDAO {
                 application.setApplicationType(resultSet.getString(SQLQueryConstants.APPLICATION_TYPE_NAME));
                 application.setHashId(resultSet.getString(SQLQueryConstants.HASH_ID));
                 application.setIcon(resultSet.getBlob(SQLQueryConstants.ICON));
+                application.setDefaultVersion(resultSet.getString(SQLQueryConstants.DEFAULT_VERSION));
 
                 applications.add(application);
             }
