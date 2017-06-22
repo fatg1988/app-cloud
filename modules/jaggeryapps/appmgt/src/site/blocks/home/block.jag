@@ -47,7 +47,7 @@ jagg.block("home", {
         if(!selectedRevision && application.defaultVersion){
             selectedRevision = application.defaultVersion;
         } else if (!application.defaultVersion) {
-            selectedRevision = Object.keys(application.versions)[application.versions.length];
+            selectedRevision = Object.keys(application.versions)[application.versions.length - 1];
         }
 
         var restartCounts = applicationModule.getRestartCounts(application.applicationName, selectedRevision, application.applicationType);
