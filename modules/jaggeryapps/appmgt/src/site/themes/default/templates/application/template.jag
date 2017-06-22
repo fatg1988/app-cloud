@@ -908,7 +908,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
         //first disable the button and then enable it only if conditions are satisfied
         $("#add-application").prop("disabled", true);
 
-        if ($('#applicationName').val() && $('#applicationRevision').val() && $('#container option:selected').val() &&
+        if (validateAlphaNumeric($('#applicationName').val()).status && $('#applicationRevision').val() && $('#container option:selected').val() &&
             $('#runtime').val() > 0 && checkApplicationVersionExistence($('#applicationRevision').val())) {// mandatory validations for all app types
             if (appTypeName == custom) { // validations for custom app type
                     $("#add-application").prop("disabled", false); // for the custm app type mandatory fields are enough.
@@ -935,9 +935,9 @@ jagg.template("application", function (inputs, outputs, jagg) {
         }
     }
 
-
     function activateUploadButton() {
-        if ($('#applicationName').val() && $('#applicationRevision').val() && $("#btn-artifact-upload").text().trim() == "Browse") {
+        if (validateAlphaNumeric($('#applicationName').val()).status && $('#applicationRevision').val() &&
+        $ ("#btn-artifact-upload").text().trim() == "Browse") {
             $("#btn-artifact-upload").attr("disabled", false);
         }
         validateArtifactURL($('#artifactUrl').val());
@@ -1612,6 +1612,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/jquery.iframe-transport.js'))%>"></script>
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/jQueryValidationPlugin-1.14.0/jquery.validate.min.js'))%>"></script>
       <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/jQueryValidationPlugin-1.14.0/additional-methods.min.js'))%>"></script>
+      <script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('js/custom/validator.js'))%>"></script>
     <!-- --------------------------------------- Overlay ----------------------------------------- -->
     <div class="modal fade build-logs-modal" id="app_creation_progress_modal">
         <div class="modal-dialog modal-dialog-margin-top-md ">
