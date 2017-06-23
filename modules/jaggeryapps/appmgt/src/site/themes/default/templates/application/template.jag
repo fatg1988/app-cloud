@@ -1372,13 +1372,13 @@ jagg.template("application", function (inputs, outputs, jagg) {
             <div class="form-group" id="file-upload-block">
                  <%if(isMultiArtifactsSupported){%>
                   <div>
-                         <label for="application-description" >Upload  <b>.<%=appType.extension.toUpperCase()%></b> files: *</label>
+                         <label for="application-description" >Upload  <b>.<%=appType.extension.toUpperCase()%></b> Files: *</label>
                   </div>
                  <ul id = "artifactlist" class="list-group">
                  </ul>
                 <%}else{%>
                   <div>
-                     <label for="application-description" >Upload a <b>.<%=appType.extension.toUpperCase()%></b> file: *</label>
+                     <label for="application-description" >Upload a <b>.<%=appType.extension.toUpperCase()%></b> File: *</label>
                  </div>
                 <%}%>
                 <div class="input-group">
@@ -1402,7 +1402,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
          <% if (option == 'upload-from-url' || option == 'deploy-sample') { %>
             <div class="form-group" id="url-upload-block">
                 <div>
-                    <label for="application-description" >Upload a <b>.<%=appType.extension.toUpperCase()%></b> file: *</label>
+                    <label for="application-description" >Upload a <b>.<%=appType.extension.toUpperCase()%></b> File: *</label>
                 </div>
                 <div class="input-group">
                     <input id="artifactUrl" name="artifactUrl" type="text" class="form-control" placeholder="Enter artifact URL" />
@@ -1438,7 +1438,7 @@ jagg.template("application", function (inputs, outputs, jagg) {
          <% } %>
         <% } %>
         <div class="text-right">
-        <a href="#" class="show-advance-settings">Advance Settings...</a>
+        <a href="#" class="show-advance-settings">Advanced Settings...</a>
         </div>
         <div class="advance-settings-section" style="display: none;">
             <div class="form-group">
