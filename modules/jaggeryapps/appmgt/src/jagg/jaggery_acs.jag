@@ -124,7 +124,7 @@
             sessionId = session.getId();
             ssoRelyingParty.setSessionAuthenticated(sessionId, samlResponse);
             var username = ssoRelyingParty.getLoggedInUser(sessionId);
-            jagg.setSessionDetailsAndRedirection(username);
+            jagg.setSessionDetailsAndRedirection(fullUsername);
             return;
         } else {
             // if the saml response is log out request from IDP, we log out from web app.
