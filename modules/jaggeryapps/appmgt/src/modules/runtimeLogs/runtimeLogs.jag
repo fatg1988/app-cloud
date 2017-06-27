@@ -28,6 +28,7 @@ var KubernetesRuntime = Packages.org.wso2.appcloud.provisioning.runtime.Kubernet
 var KubernetesProvisioningUtils = Packages.org.wso2.appcloud.provisioning.runtime.Utils.KubernetesProvisioningUtils;
 var DeploymentLogs = Packages.org.wso2.appcloud.provisioning.runtime.beans.DeploymentLogs;
 var DeploymentLogStream = Packages.org.wso2.appcloud.provisioning.runtime.beans.DeploymentLogStream;
+var LogQuery = Packages.org.wso2.appcloud.provisioning.runtime.beans.LogQuery;
 var applicationModule = jagg.module("application");
 var DASReceiverEp = modManager.getPropertyValue(DAS_RECEIVER_EP);
 var ReceiverAuth = modManager.getPropertyValue(DAS_RECEIVER_AUTH_BASE64);
@@ -40,18 +41,20 @@ var getRuntimeLogs = function (applicationKey, selectedRevision, applicationType
     var exposureLevel = applicationModule.getExposureLevel(applicationName, selectedRevision);
 
     try {
+        var logQuery = new LogQuery(false, 10000, -1);
         var applicationCtx = KubernetesProvisioningUtils.getApplicationContext(applicationName, selectedRevision,
                                                                                applicationType,
                                                                                modManager.getTenantId(),
                                                                                modManager.getTenantDomain(),
                                                                                versionHashId, exposureLevel);
         var kubService = new KubernetesRuntime(applicationCtx);
-        //if (isStream){
-        if (false) {
-            return kubService.streamRuntimeLogs();
-        } else {
-            return kubService.getRuntimeLogs(null);
-        }
+//        if (isStream){
+//        if (false) {
+//            return kubService.streamRuntimeLogs();
+//        } else {
+//            return kubService.getRuntimeLogs(null);
+//        }
+        return kubService.getRuntimeLogs(logQuery);
     } catch(e){
         log.error("Error while getting runtime logs for application : " + applicationName + " revision : " + selectedRevision);
         log.error(e);
