@@ -253,12 +253,12 @@
     -->
     <Tenant>
         <LoadingPolicy>
-            <!--LazyLoading>
-                <IdleTime>30</IdleTime>
-            </LazyLoading>-->
-            <EagerLoading>
+            <LazyLoading>
+                <IdleTime>1440</IdleTime>
+            </LazyLoading>
+            <!--EagerLoading>
                    <Include>*</Include>
-            </EagerLoading>
+            </EagerLoading-->
         </LoadingPolicy>
     </Tenant>
 
