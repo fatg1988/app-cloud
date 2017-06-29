@@ -129,13 +129,17 @@ jagg.template("index", function(inputs, outputs, jagg) {
             }
 
             var appIcon;
+            var appStoppedClass = '';
+            if (application.runningVersionCount <= 0) {
+                appStoppedClass = "app-stopped";
+            }
             if (application.icon) {
                 imgSrc = "data:image/bmp;base64,"+application.icon;
-                appIcon = '<div class="app-icon">' +
+                appIcon = '<div class="app-icon ' + appStoppedClass + '">' +
                     '<img src="'+imgSrc+'" class="square-element">' +
                     '</div>';
             } else {
-                appIcon = '<div class="app-icon" style="background:'+ application.uniqueColor + ';">' +
+                appIcon = '<div class="app-icon ' + appStoppedClass + '" style="background:'+ application.uniqueColor + ';">' +
                     '<div class="square-element">' +
                      '<div class="app-name-icon">' + application.nameToChar + '</div>' +
                     '</div>' +
@@ -186,14 +190,14 @@ jagg.template("index", function(inputs, outputs, jagg) {
             } else {
                 theLi  = '<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" id="' + application.applicationName + '">' +
 
-                                '<div class="cloud-app-listing app-color-one app-stopped">'+
+                                '<div class="cloud-app-listing app-color-one">'+
                                          '<a href="/appmgt/site/pages/home.jag?applicationKey=' + application.hashId + '">'+
-                                         '<i class="fw '+application.appTypeIcon+' fw-2x app-type-icon" data-toggle="tooltip" data-placement="right" title="' + application.appTypeTitle + '"></i>' +
+                                         '<i class="fw '+application.appTypeIcon+' fw-2x app-type-icon app-type-icon-stopped" data-toggle="tooltip" data-placement="right" title="' + application.appTypeTitle + '"></i>' +
                                             appIcon +
                                          '</a>' +
                                          '<div class="app-name">' +
                                             '<div class="name">' +
-                                                '<div class="ellipsis">' + displayName + '</div>' +
+                                                '<div class="ellipsis stopped-versions-name">' + displayName + '</div>' +
                                                 '<div class="dropdown running-versions-wrapper">' +
                                                     '<span class="running-versions"> stopped </span>' +
                                                 '</div>' +
