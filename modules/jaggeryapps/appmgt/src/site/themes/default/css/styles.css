@@ -1005,6 +1005,10 @@ a.btn-action {
     text-align: left;
 }
 
+.app-type-icon-stopped {
+    opacity: 0.1;
+}
+
 .cloud-app-listing i.app-type-icon {
     position: absolute;
     z-index: 98;
@@ -3593,13 +3597,17 @@ select option.option_link,.dropdown-menu>li>a.option_link {
     display: inline-block;
 }
 
+.stopped-versions-name {
+    opacity: 0.1;
+}
+
 .running-versions-wrapper {
     height: 30px;
 }
 
 .app-stopped {
-    filter: grayscale(95%);
-    opacity: 0.3;
+    /*filter: grayscale(95%);*/
+    opacity: 0.1;
 }
 
 .app-stopped .app-name {
