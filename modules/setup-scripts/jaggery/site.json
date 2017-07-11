@@ -2,6 +2,9 @@
   "theme" : {
     "base" : "default"
   },
+  "backChannelAuth" : {
+    "enabled" : true
+  },
   "context" : "/appmgt",
   "cloudMgtContext" : "/cloudmgt",
   "dashboardContext" : "/dashboard",

@@ -20,38 +20,7 @@
 # ------------------------------------------------------------------------
 # This is a basic script to get a developer setup done with multi-tenancy and sso
 #  
-echo -n "Please enter the path to product packs directory > "
-read packs_dir
-echo "packs directory : $packs_dir"
-echo
-echo -n "Please enter the path to your local setup > "
-read setup_path
-echo "local cloud setup path is set to : $setup_path"
-echo
-echo -n "Please enter the app-cloud source location > "
-read appcloud_src
-echo "appcloud source location : $appcloud_src"
-echo
-echo -n "Please enter the wso2-app-cloud artifact location > "
-read artifact_src
-echo "wso2-app-cloud artifact location : $artifact_src"
-echo
-echo -n "Please enter the cloud source location > "
-read cloud_src
-echo "cloud source location : $cloud_src"
-echo
-echo -n "Please enter the hostname of docker registry > "
-read docker_registry
-echo "docker registry : $docker_registry"
-echo
-echo "-------------------------------------------------------------------------"
-
-APPCLOUD_HOME=$appcloud_src
-PACK_DIR=$packs_dir 
-SETUP_DIR=$setup_path 
-ARTIFACT_HOME=$artifact_src
-CLOUD_HOME=$cloud_src
-
+source `pwd`/setup.conf 
 AS_VERSION=wso2as-5.2.1
 SS_VERSION=wso2ss-1.1.0
 AS_NODE=wso2as-5.2.1_AC
@@ -139,7 +108,8 @@ function as_setup(){
     cp -r $PATCH_LOCATION/wso2as-5.2.1/* $AS_HOME/repository/components/patches/
     cp -r $APPCLOUD_HOME/modules/webapps/appCloudTierapi/target/tierapi.war $AS_HOME/repository/deployment/server/webapps/
     sed -i -e "s|AS_HOME|$AS_HOME|g" $AS_HOME/repository/conf/appcloud/appcloud.properties
-    sed -i -e "s|DOCKER_REGISTRY|$docker_registry|g" $AS_HOME/repository/conf/appcloud/appcloud.properties
+    sed -i -e "s|DOCKER_REGISTRY_NAME|$DOCKER_REGISTRY_URL|g" $AS_HOME/repository/conf/appcloud/appcloud.properties
+    sed -i -e "s|DOCKER_REGISTRY_PASSWORD|$BASE64_OF_GCLOUD_SERVICE_ACCOUNT_JSON_FILE|g" $AS_HOME/repository/conf/appcloud/appcloud.properties
 
     cp $CLOUD_HOME/cloud-backends/components/user-store/org.wso2.carbon.cloud.userstore/target/org.wso2.carbon.cloud.userstore-1.0.0.jar $AS_HOME/repository/components/dropins/
 }
